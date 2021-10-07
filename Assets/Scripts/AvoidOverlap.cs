@@ -47,10 +47,8 @@ public class AvoidOverlap : MonoBehaviour
                 }
             }
         }
-        Debug.Log(closest);
         if (distance < radius)
         {
-            Debug.Log("Test");
             return closest;
         }
         else
