@@ -11,47 +11,6 @@ public class ConnectLine : MonoBehaviour
     public int activeEndpoint = -1;
 
 
-
-
-    [SerializeField] float angle;
-    
-    [SerializeField] float radius = 0.5f;
-    [SerializeField] float StickRadius = 0.5f;
-    [SerializeField]  private GameObject connectedNode = null;
-
-
-
-    private Vector2 idlePosition = new Vector2(1f, 0f);
-
-    bool disconnected = false;
-
-    // Variables assiociated with mouse moving/dragging
-    private Vector3 mOffset;
-    private float mZCord;
-    private bool mouseDown = false;
-
-    // Variable assiociated with cursour transformation
-    public Texture2D cursorTexture;
-    public Vector2 hotSpot = Vector2.zero;
-    private Sprite defaultSprite = null;
-    [SerializeField] Sprite connectionSprite = null;
-
-
-    private GameObject nearbyNode = null;
-
-
-    //public void initNode(GameObject node)
-    //{
-    //    nodes[0] = node;
-    //}
-    //
-    //private GameObject getOriginNode()
-    //{
-    //
-    //    return nodes[0];
-    //
-    //}
-
     private Endpoint findEnpoint(GameObject endpointObject)
     {
         Endpoint endpoint = endpointObject.GetComponent<Endpoint>();
@@ -61,9 +20,7 @@ public class ConnectLine : MonoBehaviour
 
     void Start()
     {
-        
         lineRend = gameObject.GetComponent<LineRenderer>();
-        defaultSprite = gameObject.GetComponent<SpriteRenderer>().sprite;
     }
 
     void createEndpoints(GameObject node)
@@ -80,61 +37,23 @@ public class ConnectLine : MonoBehaviour
 
     void Update()
     {
-        /*if (mouseDown == true)
-        {
-            transform.position = GetMouseWorldPos() + mOffset;
-            nearbyNode = findClosestNode();
-
-            if(nearbyNode != null)
-            {
-                Debug.Log("Changing cursor");
-                connectionCursor();
-            }
-            else
-            {
-                defaultCursor();
-            }    
-
-        }
-        else
-        {
-            defaultCursor();
-        }
-
-        if (mouseDown == true || connectedNode != null)
-        {
-            
-            //redrawLine();
-        }
-
-
-
-        if(transform.position.y > getOriginNode().transform.position.y)
-        {
-            angle = Vector2.Angle(idlePosition, transform.position - getOriginNode().transform.position);
-        }
-        else
-        {
-            angle = -Vector2.Angle(idlePosition, transform.position - getOriginNode().transform.position);
-        }
-
-        if(connectedNode != null && mouseDown != true)
-        {
-            followConnection();
-        }
-        
-        transform.eulerAngles = new Vector3(0f, 0f , angle);
-        deleteDisconnected();*/
+       redrawLine();
     }
 
 
 
-    /*void redrawLine()
+    void redrawLine()
     {
         lineRend.enabled = true;
-        Vector3[] positionArray = new[] { transform.position, getOriginNode().transform.position };
+        Vector3 direction = (endpoints[1].transform.position - endpoints[0].transform.position).normalized;
+        float arrow0 = endpoints[0].GetComponent<SpriteRenderer>().sprite.rect.width / endpoints[0].GetComponent<SpriteRenderer>().sprite.pixelsPerUnit;
+        float arrow1 = endpoints[1].GetComponent<SpriteRenderer>().sprite.rect.width / endpoints[1].GetComponent<SpriteRenderer>().sprite.pixelsPerUnit;
+
+        //float testDim = endpoints[0].transform.localScale.x * endpoints[0].GetComponent<SpriteRenderer>().sprite.bounds.size.x;
+        //Debug.Log(arrowLength);
+        Vector3[] positionArray = new[] { endpoints[0].transform.position + direction * arrow0, endpoints[1].transform.position - direction * arrow1 };
         lineRend.SetPositions(positionArray);
-    }*/
+    }
 
     public void initClick(GameObject node)
     {
@@ -149,81 +68,4 @@ public class ConnectLine : MonoBehaviour
         findEnpoint(endpoints[1]).SetUnclicked();
 
     }
-
-
-
-    /*private void followConnection()
-    {
-        transform.position = connectedNode.transform.position + (getOriginNode().transform.position - connectedNode.transform.position).normalized * (radius + 0.38f);
-    }*/
-
-/* private void deleteDisconnected()
- {
-     if (disconnected)
-     {
-         Vector3 delta = (getOriginNode().transform.position - transform.position);
-         if (delta.magnitude > radius)
-         {
-             transform.position += delta/30;
-             //redrawLine();
-         }
-         else
-         {
-             disconnected = false;
-             lineRend.enabled = false;
-             Destroy(gameObject);
-         }
-     }
- }*/
-
-
-
-    /////////////////////////////////////
-    ///Used Code 
-/*private Vector3 GetMouseWorldPos()
-{
-    Vector3 mousePoint = Input.mousePosition;
-    mousePoint.z = mZCord;
-    return Camera.main.ScreenToWorldPoint(mousePoint);
-}*/
-
-/*private GameObject findClosestNode()
-{
-    GameObject[] allNodes;
-    allNodes = GameObject.FindGameObjectsWithTag("Node");
-    GameObject closest = null;
-    float distance = Mathf.Infinity;
-    Vector3 position = transform.position;
-    foreach (GameObject node in allNodes)
-    {
-        Vector3 diff = node.transform.position - position;
-        float curDistance = diff.magnitude;
-        if (curDistance < distance)
-        {
-            closest = node;
-            distance = curDistance;
-        }
-    }
-
-    if(closest != getOriginNode() && distance < StickRadius)
-    {
-        return closest;
-    }
-    else
-    {
-        return null;
-    }
-}*/
-
-/*void connectionCursor()
-{
-Cursor.visible = false;
-gameObject.GetComponent<SpriteRenderer>().sprite = connectionSprite;
-}
-
-void defaultCursor()
-{
-Cursor.visible = true;
-gameObject.GetComponent<SpriteRenderer>().sprite = defaultSprite;
-}*/
 }

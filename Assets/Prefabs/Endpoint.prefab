@@ -45,9 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: badefdcc91e988e4cbc924fd3939c96b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  endpointSprite: {fileID: -2413806693520163455, guid: a7a582f854e9e314f8b373b0c25fd30b, type: 3}
+  endpointSprite: {fileID: -4806529256429852613, guid: 81b2b2b0b24e7b34da788f8f28aa1e24, type: 3}
   parentNode: {fileID: 0}
-  defaultSprite: {fileID: -2413806693520163455, guid: a7a582f854e9e314f8b373b0c25fd30b, type: 3}
+  defaultSprite: {fileID: -4806529256429852613, guid: 81b2b2b0b24e7b34da788f8f28aa1e24, type: 3}
   connectionSprite: {fileID: 21300000, guid: 8a495b9d43c88b14ebdb4bc6092abecc, type: 3}
 --- !u!212 &5990457383181159765
 SpriteRenderer:

@@ -9,7 +9,7 @@ public class Endpoint : MonoBehaviour
 
     private GameObject otherEndpoint = null;
 
-
+    private GameObject snapNode = null;
     [SerializeField] private Sprite defaultSprite = null;
     [SerializeField] Sprite connectionSprite = null;
 
@@ -17,6 +17,13 @@ public class Endpoint : MonoBehaviour
     private Vector3 mOffset;
     private float mZCord;
     private bool mouseDown = false;
+
+    bool disconnected = false;
+    float deletetionRadius = 1f;
+    float nodeRadius = 0.5f;
+    float angle = 0;
+
+    private Vector2 idlePosition = new Vector2(1f, 0f);
 
     // Start is called before the first frame update
     void Start()
@@ -50,27 +57,57 @@ public class Endpoint : MonoBehaviour
     void Update()
     {
 
+        updateAngle();
         if (mouseDown == true)
         {
-            GameObject closestNode = findClosestNode();
+            GameObject newSnapNode = findClosestNode();
+            if (newSnapNode != snapNode)
+            {
+                onClosestNodeChange(newSnapNode);
+            }
             transform.position = GetMouseWorldPos() + mOffset;
-            if (closestNode != null)
-            {
-                Debug.Log("Changing cursor");
-                connectionCursor();
-            }
-            else
-            {
-                defaultCursor();
-            }
+
         }
         else
         {
-            if(parentNode != null)
+            defaultCursor();
+            deleteDisconnected();
+            if (parentNode != null)
             {
                 Vector3 direction = otherEndpoint.transform.position - parentNode.transform.position;
-                transform.position = direction.normalized + parentNode.transform.position;
+                transform.position = direction.normalized*nodeRadius + parentNode.transform.position;
             }
+        }
+    }
+
+    void updateAngle()
+    {
+        if(transform.position.y > otherEndpoint.transform.position.y)
+        {
+            angle = Vector2.Angle(idlePosition, transform.position - otherEndpoint.transform.position);
+        }
+        else
+        {
+            angle = -Vector2.Angle(idlePosition, transform.position - otherEndpoint.transform.position);
+        }
+
+
+
+        transform.eulerAngles = new Vector3(0f, 0f , angle+180);
+    }
+
+    void onClosestNodeChange(GameObject newSnapNode)
+    {
+        snapNode = newSnapNode;
+        if (snapNode != null)
+        {
+            Debug.Log("Changing cursor");
+            connectionCursor();
+        }
+        else
+        {
+            Debug.Log("Removing cursor");
+            defaultCursor();
         }
     }
 
@@ -84,12 +121,12 @@ public class Endpoint : MonoBehaviour
     void defaultCursor()
     {
         Cursor.visible = true;
-        gameObject.GetComponent<SpriteRenderer>().sprite = defaultSprite;
+        gameObject.GetComponent<SpriteRenderer>().sprite = endpointSprite;
     }
 
     void OnMouseDown()
     {
-        Debug.Log("Clicked Endpoint");
+        
         SetClicked();
 
     }
@@ -97,11 +134,14 @@ public class Endpoint : MonoBehaviour
     private void OnMouseUp()
     {
         SetUnclicked();
+
     }
 
 
     public void SetClicked()
     {
+        
+        disconnected = false;
         mouseDown = true;
         mZCord = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
         mOffset = gameObject.transform.position - GetMouseWorldPos();
@@ -110,6 +150,14 @@ public class Endpoint : MonoBehaviour
     public void SetUnclicked()
     {
         mouseDown = false;
+        parentNode = snapNode;
+        snapNode = null;
+        if (parentNode == null)
+        {
+            disconnected = true;
+        }
+            
+       
     }
 
     private Vector3 GetMouseWorldPos()
@@ -122,6 +170,23 @@ public class Endpoint : MonoBehaviour
     public void setEndpointSprite()
     {
         gameObject.GetComponent<SpriteRenderer>().sprite = endpointSprite;
+    }
+
+    private void deleteDisconnected()
+    {
+        if (disconnected)
+        {
+            Vector3 delta = (otherEndpoint.transform.position - transform.position);
+            if (delta.magnitude > deletetionRadius)
+            {
+                transform.position += Time.deltaTime * delta.normalized * 10;
+                //redrawLine();
+            }
+            else
+            {
+                Destroy(gameObject.transform.parent.gameObject);
+            }
+        }
     }
 
     private GameObject findClosestNode()
@@ -146,7 +211,7 @@ public class Endpoint : MonoBehaviour
     
         if(distance < 1f)
         {
-            return closest;
+        return closest;
         }
         else
         {

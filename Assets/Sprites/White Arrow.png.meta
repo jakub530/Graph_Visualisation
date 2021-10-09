@@ -1,7 +1,10 @@
 fileFormatVersion: 2
 guid: 5f8d785974cbbde4c855c07bea61105a
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: -7219626767081691408
+    second: White Arrow_0
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -41,17 +44,17 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 9
-  spritePivot: {x: 0.12501174, y: 0.4975692}
-  spritePixelsToUnits: 100
-  spriteBorder: {x: 128, y: 176, z: 122, w: 181}
+  spritePivot: {x: 0.12405643, y: 0.49780652}
+  spritePixelsToUnits: 1000
+  spriteBorder: {x: 128, y: 176, z: 124, w: 181}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
-  spriteTessellationDetail: -1
+  spriteTessellationDetail: 0
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
@@ -68,7 +71,31 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -77,9 +104,42 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: White Arrow_0
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 178
+        width: 769
+        height: 665
+      alignment: 9
+      pivot: {x: -0.0013003901, y: 0.5022556}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f6a131e4bbbecb90800000000000000
+      internalID: -7219626767081691408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
-    physicsShape: []
+    physicsShape:
+    - - {x: -367.37735, y: -139.60718}
+      - {x: -383.7693, y: -121.0509}
+      - {x: -384.35165, y: 121.460815}
+      - {x: -366.24753, y: 135.2265}
+      - {x: 25.868896, y: 135.09607}
+      - {x: 25.444336, y: 317.44293}
+      - {x: 56.83191, y: 335.8191}
+      - {x: 393.40997, y: -2.0896912}
+      - {x: 69.040955, y: -329.39728}
+      - {x: 48.469604, y: -336.5912}
+      - {x: 25.056885, y: -315.91742}
+      - {x: 25.895386, y: -138.37842}
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
