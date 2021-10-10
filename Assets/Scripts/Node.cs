@@ -7,7 +7,9 @@ public class Node
 {
     List<Edge> connections = new List<Edge>();
     public int id;
-    
+    public GameObject vis;
+
+
     public void addConnection(Node destination, int cost = 1, bool activeDir = true)
     {
         if (findConnectionByDestination(destination) == null)
@@ -55,12 +57,18 @@ public class Node
         }
     }
 
+    public List<Node> findNeighbours()
+    {
+        return connections.Select(_ => _.otherNode).ToList();
+    }
 
 
-    public Node(string msg, int _id)
+
+    public Node(string msg, int _id, GameObject _vis)
     {
         //Debug.Log("Your message was + " +  msg);
         id = _id;
+        vis = _vis;
     }
 
     public static bool doesEdgeExist(Node node0, Node node1)

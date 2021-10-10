@@ -5,11 +5,14 @@ using UnityEngine;
 public class NodeVis : MonoBehaviour
 {
     private float radius = 2f;
-    private Node attachedNode = null;
+    public Node attachedNode = null;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
-        attachedNode = new Node(gameObject.name, System.Int32.Parse(gameObject.name));
+        attachedNode = new Node(gameObject.name, System.Int32.Parse(gameObject.name), gameObject);
     }
 
     // Update is called once per frame
@@ -22,12 +25,51 @@ public class NodeVis : MonoBehaviour
         }
     }
 
+    public void OnMouseDown()
+    {
+        VisExperiments.ClickedNode(gameObject);
+    }
+
     // Get Attached Node
     public Node getNode()
     {
         return attachedNode;
     }
 
+    public void setColor(Color color)
+    {
+        SpriteRenderer innerCircle = transform.GetChild(0).GetComponent<SpriteRenderer>();
+        SpriteRenderer outerCircle = transform.GetComponent<SpriteRenderer>();
+
+        float darkMultiplier = 0.7f;
+        Color darkerColor = new Color(color.r * darkMultiplier, color.g * darkMultiplier, color.b * darkMultiplier);
+
+        innerCircle.color = color;
+        outerCircle.color = darkerColor;
+    }
+
+    public void darkenColor()
+    {
+        SpriteRenderer innerCircle = transform.GetChild(0).GetComponent<SpriteRenderer>();
+        Color color = innerCircle.color;
+        setColor(new Color(color.r * 0.99f, color.g * 0.99f, color.b * 0.99f));
+    }
+
+    public bool switchColor(Color inputColor)
+    {
+        SpriteRenderer innerCircle = transform.GetChild(0).GetComponent<SpriteRenderer>();
+        if(innerCircle.color != inputColor)
+        {
+            setColor(inputColor);
+            return true;
+        }
+        else
+        {
+
+            return false;
+        }
+        
+    }
 
 
 

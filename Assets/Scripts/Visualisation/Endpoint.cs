@@ -106,12 +106,12 @@ public class Endpoint : MonoBehaviour
         snapNode = newSnapNode;
         if (snapNode != null)
         {
-            Debug.Log("Changing cursor");
+            //Debug.Log("Changing cursor");
             connectionCursor();
         }
         else
         {
-            Debug.Log("Removing cursor");
+            //Debug.Log("Removing cursor");
             defaultCursor();
         }
     }
@@ -147,7 +147,7 @@ public class Endpoint : MonoBehaviour
     {
         if(parentNode != null)
         {
-            Debug.Log("Removing Edge");
+            //Debug.Log("Removing Edge");
             removeEdge();
         }
         disconnected = false;
@@ -196,13 +196,13 @@ public class Endpoint : MonoBehaviour
     {
         Node ownNode = getParentNodeScript().getNode();
         Node otherNode = getOtherEndpoint().getParentNodeScript().getNode();
-        Debug.Log("Disconnecting Node" + ownNode.id);
-        Debug.Log("Disconnecting Node" + otherNode.id);
+        //Debug.Log("Disconnecting Node" + ownNode.id);
+        //Debug.Log("Disconnecting Node" + otherNode.id);
 
 
         if (Node.doesEdgeExist(ownNode, otherNode))
         {
-            Debug.Log("Edge exists");
+            //Debug.Log("Edge exists");
             ownNode.removeConnection(otherNode);
             otherNode.removeConnection(ownNode);
         }
@@ -250,8 +250,8 @@ public class Endpoint : MonoBehaviour
             float curDistance = diff.magnitude;
             if (curDistance < distance && node != getOtherEndpoint().getParentNode())
             {
-                Debug.Log(getOtherEndpoint().getParentNode());
-                Debug.Log(closest);
+                //Debug.Log(getOtherEndpoint().getParentNode());
+                //Debug.Log(closest);
                 closest = node;
                 distance = curDistance;
             }

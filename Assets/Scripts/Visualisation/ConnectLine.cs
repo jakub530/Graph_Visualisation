@@ -4,11 +4,9 @@ using UnityEngine;
 
 public class ConnectLine : MonoBehaviour
 {
+    [SerializeField] private GameObject endpointPrefab = null;
     private List<GameObject> endpoints = new List<GameObject>() { null, null };
     private LineRenderer lineRend;
-    [SerializeField] private GameObject endpointPrefab = null;
-
-    public int activeEndpoint = -1;
     
 
 
@@ -27,7 +25,6 @@ public class ConnectLine : MonoBehaviour
     void createEndpoints(GameObject node)
     {
         Debug.Log("Creating Endpoints");
-        activeEndpoint = 1;
         for(int i=0; i<2; i++)
         {
             endpoints[i] = Instantiate(endpointPrefab, transform.position, transform.rotation);
