@@ -62,11 +62,8 @@ public class Node
         return connections.Select(_ => _.otherNode).ToList();
     }
 
-
-
     public Node(string msg, int _id, GameObject _vis)
     {
-        //Debug.Log("Your message was + " +  msg);
         id = _id;
         vis = _vis;
     }
@@ -82,10 +79,4 @@ public class Node
             return true;
         }
     }
-
-
-    /*private static bool findMatchingNode(Edge edge)
-    {
-        if()
-    }*/
 }

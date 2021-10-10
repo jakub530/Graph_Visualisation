@@ -7,8 +7,6 @@ public class NodeVis : MonoBehaviour
     private float radius = 2f;
     public Node attachedNode = null;
 
-
-
     // Start is called before the first frame update
     void Start()
     {
@@ -18,10 +16,16 @@ public class NodeVis : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GameObject closest = findClosestNode();
-        if (closest != null)
+        GameObject closestNode = Helper.FindClosestGameObject(
+            origin: transform.position,
+            tag: "Node",
+            exclusionList: new List<GameObject>() { gameObject }
+        );
+
+        // Move away if something is in radius
+        if (Helper.CheckIfInRange(radius, gameObject, closestNode))
         {
-            moveAway(closest);
+            moveAway(closestNode);
         }
     }
 
@@ -58,7 +62,7 @@ public class NodeVis : MonoBehaviour
     public bool switchColor(Color inputColor)
     {
         SpriteRenderer innerCircle = transform.GetChild(0).GetComponent<SpriteRenderer>();
-        if(innerCircle.color != inputColor)
+        if (innerCircle.color != inputColor)
         {
             setColor(inputColor);
             return true;
@@ -68,43 +72,10 @@ public class NodeVis : MonoBehaviour
 
             return false;
         }
-        
     }
-
-
 
     private void moveAway(GameObject otherNode)
     {
         transform.position += (transform.position - otherNode.transform.position).normalized * 0.01f;
-    }
-
-    private GameObject findClosestNode()
-    {
-        GameObject[] gos;
-        gos = GameObject.FindGameObjectsWithTag("Node");
-        GameObject closest = null;
-        float distance = Mathf.Infinity;
-        Vector3 position = transform.position;
-        foreach (GameObject go in gos)
-        {
-            if (go != gameObject)
-            {
-                Vector3 diff = go.transform.position - position;
-                float curDistance = diff.magnitude;
-                if (curDistance < distance)
-                {
-                    closest = go;
-                    distance = curDistance;
-                }
-            }
-        }
-        if (distance < radius)
-        {
-            return closest;
-        }
-        else
-        {
-            return null;
-        }
     }
 }

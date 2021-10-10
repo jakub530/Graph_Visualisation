@@ -4,68 +4,67 @@ using UnityEngine;
 
 public class ConnectLine : MonoBehaviour
 {
-    [SerializeField] private GameObject endpointPrefab = null;
+    [SerializeField] GameObject endpointPrefab;
     private List<GameObject> endpoints = new List<GameObject>() { null, null };
-    private LineRenderer lineRend;
-    
+    private LineRenderer line;
+    private List<float> spriteSize;
 
-
-    private Endpoint findEnpoint(GameObject endpointObject)
+    private Endpoint endpointScript(GameObject endpointObject)
     {
-        Endpoint endpoint = endpointObject.GetComponent<Endpoint>();
-
-        return endpoint;
+        return endpointObject.GetComponent<Endpoint>();
     }
 
     void Start()
     {
-        lineRend = gameObject.GetComponent<LineRenderer>();
+        line = gameObject.GetComponent<LineRenderer>();
     }
+
+    void Update()
+    {
+        drawLine();
+    }
+
 
     void createEndpoints(GameObject node)
     {
-        Debug.Log("Creating Endpoints");
         for(int i=0; i<2; i++)
         {
             endpoints[i] = Instantiate(endpointPrefab, transform.position, transform.rotation);
             endpoints[i].transform.SetParent(this.transform);
         }
-        findEnpoint(endpoints[0]).setParentNode(node);
+
+        endpointScript(endpoints[1]).setOtherEndpoint(endpoints[0]);
+        endpointScript(endpoints[0]).setOtherEndpoint(endpoints[1]);
+        endpointScript(endpoints[1]).SetClicked();
+        endpointScript(endpoints[0]).setParentNode(node);
     }
 
-    void Update()
+    void updateSpriteSize()
     {
-       redrawLine();
-    }
-
-
-
-    void redrawLine()
-    {
-        lineRend.enabled = true;
-        Vector3 direction = (endpoints[1].transform.position - endpoints[0].transform.position).normalized;
-
-        List<float> arrowLength = new List<float>();
-        for(int i=0; i<2; i++)
+        spriteSize = new List<float>();
+        for (int i = 0; i < 2; i++)
         {
-            arrowLength.Add(endpoints[0].GetComponent<SpriteRenderer>().sprite.rect.width / endpoints[0].GetComponent<SpriteRenderer>().sprite.pixelsPerUnit);
+            float spriteWidth = endpoints[i].GetComponent<SpriteRenderer>().sprite.rect.width;
+            float spritePixelPerUnit = endpoints[i].GetComponent<SpriteRenderer>().sprite.pixelsPerUnit;
+            spriteSize.Add(spriteWidth / spritePixelPerUnit); 
         }
-
-        Vector3[] positionArray = new[] { endpoints[0].transform.position + direction * arrowLength[0], endpoints[1].transform.position - direction * arrowLength[1] };
-        lineRend.SetPositions(positionArray);
     }
 
-    public void initClick(GameObject nodeVis)
+    void drawLine()
+    {
+        Vector3 direction = (endpoints[1].transform.position - endpoints[0].transform.position).normalized;
+        Vector3[] positionArray = new[] { endpoints[0].transform.position + direction * spriteSize[0], endpoints[1].transform.position - direction * spriteSize[1] };
+        line.SetPositions(positionArray);
+    }
+
+    public void createClickDown(GameObject nodeVis)
     {
         createEndpoints(nodeVis);
-        findEnpoint(endpoints[1]).SetClicked();
-        findEnpoint(endpoints[1]).setOtherEndpoint(endpoints[0]);
-        findEnpoint(endpoints[0]).setOtherEndpoint(endpoints[1]);
+        updateSpriteSize();
     }
 
-    public void initUnclick()
+    public void createClickUp()
     {
-        findEnpoint(endpoints[1]).SetUnclicked();
-
+        endpointScript(endpoints[1]).SetUnclicked();
     }
 }

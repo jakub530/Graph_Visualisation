@@ -17,13 +17,13 @@ public class CreateConnection : MonoBehaviour
     {
         GameObject newConnection = Instantiate(Connection, transform.position, transform.rotation);
         connectionScript = newConnection.GetComponent<ConnectLine>();
-        connectionScript.initClick(nodeVis);
+        connectionScript.createClickDown(nodeVis);
         gameObject.GetComponent<SpriteRenderer>().enabled = false;
     }
 
     private void OnMouseUp()
     {
-        connectionScript.initUnclick();
+        connectionScript.createClickUp();
         gameObject.GetComponent<SpriteRenderer>().enabled = true;
     }
 }
