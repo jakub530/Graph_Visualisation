@@ -48,7 +48,7 @@ MonoBehaviour:
   endpointSprite: {fileID: -4806529256429852613, guid: 81b2b2b0b24e7b34da788f8f28aa1e24, type: 3}
   parentNode: {fileID: 0}
   defaultSprite: {fileID: -4806529256429852613, guid: 81b2b2b0b24e7b34da788f8f28aa1e24, type: 3}
-  connectionSprite: {fileID: 21300000, guid: 8a495b9d43c88b14ebdb4bc6092abecc, type: 3}
+  connectionSprite: {fileID: 2563385775852486212, guid: 44599076c81025c46a020e4253a9a310, type: 3}
 --- !u!212 &5990457383181159765
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -88,7 +88,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_Sprite: {fileID: -2413806693520163455, guid: a7a582f854e9e314f8b373b0c25fd30b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

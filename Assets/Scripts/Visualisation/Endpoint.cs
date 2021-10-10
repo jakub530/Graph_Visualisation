@@ -41,6 +41,11 @@ public class Endpoint : MonoBehaviour
         return parentNode;
     }
 
+    public NodeVis getParentNodeScript()
+    {
+        return parentNode.GetComponent<NodeVis>();
+    }
+
     public void setOtherEndpoint(GameObject endpoint)
     {
         otherEndpoint = endpoint;
@@ -140,7 +145,11 @@ public class Endpoint : MonoBehaviour
 
     public void SetClicked()
     {
-        
+        if(parentNode != null)
+        {
+            Debug.Log("Removing Edge");
+            removeEdge();
+        }
         disconnected = false;
         mouseDown = true;
         mZCord = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
@@ -156,8 +165,47 @@ public class Endpoint : MonoBehaviour
         {
             disconnected = true;
         }
+        else
+        {
+            createEdge();
+        }
             
        
+    }
+
+    public void createEdge()
+    {
+        Node ownNode = getParentNodeScript().getNode();
+        Node otherNode = getOtherEndpoint().getParentNodeScript().getNode();
+        //Debug.Log("Connecting Node" + ownNode.id);
+        //Debug.Log("Connecting Node" + otherNode.id);
+
+        if (!Node.doesEdgeExist(ownNode, otherNode))
+        {
+            ownNode.addConnection(otherNode);
+            otherNode.addConnection(ownNode);
+        }
+        else
+        {
+            disconnected = true;
+            parentNode = null;
+        }
+    }
+
+    public void removeEdge()
+    {
+        Node ownNode = getParentNodeScript().getNode();
+        Node otherNode = getOtherEndpoint().getParentNodeScript().getNode();
+        Debug.Log("Disconnecting Node" + ownNode.id);
+        Debug.Log("Disconnecting Node" + otherNode.id);
+
+
+        if (Node.doesEdgeExist(ownNode, otherNode))
+        {
+            Debug.Log("Edge exists");
+            ownNode.removeConnection(otherNode);
+            otherNode.removeConnection(ownNode);
+        }
     }
 
     private Vector3 GetMouseWorldPos()

@@ -7,8 +7,9 @@ public class ConnectLine : MonoBehaviour
     private List<GameObject> endpoints = new List<GameObject>() { null, null };
     private LineRenderer lineRend;
     [SerializeField] private GameObject endpointPrefab = null;
-    
+
     public int activeEndpoint = -1;
+    
 
 
     private Endpoint findEnpoint(GameObject endpointObject)
@@ -46,18 +47,20 @@ public class ConnectLine : MonoBehaviour
     {
         lineRend.enabled = true;
         Vector3 direction = (endpoints[1].transform.position - endpoints[0].transform.position).normalized;
-        float arrow0 = endpoints[0].GetComponent<SpriteRenderer>().sprite.rect.width / endpoints[0].GetComponent<SpriteRenderer>().sprite.pixelsPerUnit;
-        float arrow1 = endpoints[1].GetComponent<SpriteRenderer>().sprite.rect.width / endpoints[1].GetComponent<SpriteRenderer>().sprite.pixelsPerUnit;
 
-        //float testDim = endpoints[0].transform.localScale.x * endpoints[0].GetComponent<SpriteRenderer>().sprite.bounds.size.x;
-        //Debug.Log(arrowLength);
-        Vector3[] positionArray = new[] { endpoints[0].transform.position + direction * arrow0, endpoints[1].transform.position - direction * arrow1 };
+        List<float> arrowLength = new List<float>();
+        for(int i=0; i<2; i++)
+        {
+            arrowLength.Add(endpoints[0].GetComponent<SpriteRenderer>().sprite.rect.width / endpoints[0].GetComponent<SpriteRenderer>().sprite.pixelsPerUnit);
+        }
+
+        Vector3[] positionArray = new[] { endpoints[0].transform.position + direction * arrowLength[0], endpoints[1].transform.position - direction * arrowLength[1] };
         lineRend.SetPositions(positionArray);
     }
 
-    public void initClick(GameObject node)
+    public void initClick(GameObject nodeVis)
     {
-        createEndpoints(node);
+        createEndpoints(nodeVis);
         findEnpoint(endpoints[1]).SetClicked();
         findEnpoint(endpoints[1]).setOtherEndpoint(endpoints[0]);
         findEnpoint(endpoints[0]).setOtherEndpoint(endpoints[1]);
