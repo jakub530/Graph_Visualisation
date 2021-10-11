@@ -8,6 +8,7 @@ public class Node
     List<Edge> connections = new List<Edge>();
     public int id;
     public GameObject vis;
+    static int lastID = -1;
 
 
     public void addConnection(Node destination, int cost = 1, bool activeDir = true)
@@ -62,9 +63,9 @@ public class Node
         return connections.Select(_ => _.otherNode).ToList();
     }
 
-    public Node(string msg, int _id, GameObject _vis)
+    public Node(string msg,  GameObject _vis)
     {
-        id = _id;
+        id = getNextID();
         vis = _vis;
     }
 
@@ -78,5 +79,11 @@ public class Node
         {
             return true;
         }
+    }
+
+    static int getNextID()
+    {
+        lastID++;
+        return lastID;
     }
 }

@@ -37,4 +37,14 @@ public class StateTransition : MonoBehaviour
     {
         time = 0f;
     }
+
+    public void waitForClock()
+    {
+        int currentState = state;
+        while (state == currentState)
+        {
+
+        }
+        return;
+    }
 }

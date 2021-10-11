@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Node
   - Visualization
+  - Clock
   layers:
   - Default
   - TransparentFX

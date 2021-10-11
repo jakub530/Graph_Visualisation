@@ -1,16 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NodeVis : MonoBehaviour
 {
     private float radius = 2f;
     public Node attachedNode = null;
+    [SerializeField] private Text text;
 
     // Start is called before the first frame update
     void Start()
     {
-        attachedNode = new Node(gameObject.name, System.Int32.Parse(gameObject.name), gameObject);
+        attachedNode = new Node(gameObject.name, gameObject);
+        setText(attachedNode.id.ToString());
     }
 
     // Update is called once per frame
@@ -27,6 +30,11 @@ public class NodeVis : MonoBehaviour
         {
             moveAway(closestNode);
         }
+    }
+
+    public void setText(string msg)
+    {
+        text.text = msg;
     }
 
     public void OnMouseDown()
