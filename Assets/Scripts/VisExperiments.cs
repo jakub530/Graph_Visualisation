@@ -5,10 +5,11 @@ using System.Linq;
 
 public class VisExperiments : MonoBehaviour
 {
-    static List<Node> nodeList = new List<Node>();
-    static bool triggerCascade = false;
-    static float elapsed = 0f;
-    static Color switchColor = Color.white;
+    List<Node> nodeList = new List<Node>();
+    bool triggerCascade = false;
+    Color switchColor = Color.white;
+    [SerializeField] StateTransition clock;
+    int clockState = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -19,17 +20,11 @@ public class VisExperiments : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        elapsed += Time.deltaTime;
-        if (elapsed >= 1f)
+        if(clock.state != clockState)
         {
-            Debug.Log("Trdggered elapsed");
-            elapsed = elapsed % 1f;
-            if (triggerCascade)
-            {
-                cascadeColors();
-            }
-
-        }
+            clockState = clock.state;
+            cascadeColors();
+        } 
     }
 
     public void ChangeNodeColor()
@@ -78,7 +73,7 @@ public class VisExperiments : MonoBehaviour
 
     
 
-    static public void ClickedNode(GameObject nodeObject)
+    public void ClickedNode(GameObject nodeObject)
     {
         nodeList = new List<Node>();
         switchColor = Random.ColorHSV();
@@ -87,7 +82,7 @@ public class VisExperiments : MonoBehaviour
         Node node = nodeScript.attachedNode;
         nodeList.Add(node);
         triggerCascade = true;
-        elapsed = 0f;
+        clock.restartClock();
         Debug.Log("Triggered Cascade");
 
         

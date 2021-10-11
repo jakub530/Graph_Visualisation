@@ -31,7 +31,9 @@ public class NodeVis : MonoBehaviour
 
     public void OnMouseDown()
     {
-        VisExperiments.ClickedNode(gameObject);
+        GameObject visualization = GameObject.FindGameObjectWithTag("Visualization");
+        VisExperiments visExp = visualization.GetComponent<VisExperiments>();
+        visExp.ClickedNode(gameObject);
     }
 
     // Get Attached Node
