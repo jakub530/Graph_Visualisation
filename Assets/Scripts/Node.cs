@@ -42,14 +42,18 @@ public class Node
 
     public Edge findConnectionByDestination(Node destination)
     {
-        List<Edge> matchingEdges = connections.Where(_ => _.otherNode == destination).ToList();
-        if (matchingEdges.Count == 0)
+        List<Edge> edges = connections.Where(
+        _ => _.dest == destination || 
+        (_.source == destination && _.bidirect == true))
+        .ToList();
+
+        if (edges.Count == 0)
         {
             return null;
         }
-        else if (matchingEdges.Count == 1)
+        else if (edges.Count == 1)
         {
-            return matchingEdges.First();
+            return edges.First();
         }
         else
         {
@@ -58,9 +62,31 @@ public class Node
         }
     }
 
-    public List<Node> findNeighbours()
+    // Find sources/bidirect nodes
+    public List<Node> findSourceNodes()
     {
-        return connections.Select(_ => _.otherNode).ToList();
+        return findConnectedNodes(new List<Role>() { Role.source, Role.bidirect });
+    }
+
+
+    // Find destination/bidirect nodes
+    public List<Node> findDestinationNodes()
+    {
+        return findConnectedNodes(new List<Role>() { Role.destination, Role.bidirect });
+    }
+    
+    // Find all connected nodes
+    public List<Node> findAllNodes()
+    {
+        return findConnectedNodes(new List<Role>() { Role.destination, Role.bidirect, Role.source });
+    }
+
+    // Find connected nodes
+    private List<Node> findConnectedNodes(List<Role> roles)
+    {
+        return connections.Select(_ => _.findOtherNode(this))
+                          .Where(_ => roles.Contains(_.role))
+                          .Select(_ => _.outputNode).ToList();
     }
 
     public Node(string msg,  GameObject _vis)

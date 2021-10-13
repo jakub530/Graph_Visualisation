@@ -4,17 +4,55 @@ using UnityEngine;
 
 public class Edge 
 {
-    public Node originNode;
-    public Node otherNode;
-    int cost;
-    bool activeDir;
+    public Node source;
+    public Node dest;
+    public int cost;
+    public bool bidirect;
 
-    public Edge(Node _originNode, Node _otherNode, int _cost, bool _activeDir)
+    public Edge(Node _srcNode, Node _destNode, int _cost = 1, bool _bidirect = true)
     {
-        originNode = _originNode;
-        otherNode  = _otherNode;
+        source = _srcNode;
+        dest = _destNode;
         cost = _cost;
-        activeDir = _activeDir;
+        bidirect = _bidirect;
+    }
+
+    // Return other node in given connection as well as role of the node in parameter (source/destination/bidirect)
+    public (Node outputNode, Role role) findOtherNode(Node node)
+    {
+        if (source != node && dest != node)
+        {
+            Debug.LogError("No node found in edge");
+            return (outputNode: null, role:Role.invalid);
+        }
+        else if (source == node)
+        {
+            if(bidirect)
+            {
+                return (dest, Role.bidirect);
+            }
+            else
+            {
+                return (dest, Role.source);
+            }
+
+        }
+        else if(source == dest)
+        {
+            if (bidirect)
+            {
+                return (source, Role.bidirect);
+            }
+            else
+            {
+                return (source, Role.destination);
+            }
+        }
+        else
+        {
+            Debug.LogError("Too many nodes found in edge");
+            return (null, Role.invalid);
+        }
     }
 
 
@@ -29,4 +67,12 @@ public class Edge
     {
         
     }
+}
+
+public enum Role 
+{
+    source,
+    destination,
+    bidirect,
+    invalid
 }

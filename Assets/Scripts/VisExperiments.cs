@@ -44,7 +44,7 @@ public class VisExperiments : MonoBehaviour
         List<Node> futureNodes = new List<Node>();
         foreach (Node node in nodeList)
         {
-            futureNodes = futureNodes.Concat(node.findNeighbours()).ToList();
+            futureNodes = futureNodes.Concat(node.findAllNodes()).ToList();
         }
         futureNodes = futureNodes.Distinct().ToList();
         futureNodes = futureNodes.Except(nodeList).ToList();
