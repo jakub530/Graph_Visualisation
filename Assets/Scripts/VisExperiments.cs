@@ -23,7 +23,11 @@ public class VisExperiments : MonoBehaviour
         if(clock.state != clockState)
         {
             clockState = clock.state;
-            cascadeColors();
+            if(triggerCascade)
+            {
+                cascadeColors();
+            }
+
         } 
     }
 
@@ -44,7 +48,16 @@ public class VisExperiments : MonoBehaviour
         List<Node> futureNodes = new List<Node>();
         foreach (Node node in nodeList)
         {
-            futureNodes = futureNodes.Concat(node.findAllNodes()).ToList();
+            futureNodes = futureNodes.Concat(node.findDestinationNodes()).ToList();
+        }
+        foreach (Node node in futureNodes)
+        {
+            Debug.Log(node);
+            foreach (Edge edge in node.connections)
+            {
+                Debug.Log(edge);
+            }
+
         }
         futureNodes = futureNodes.Distinct().ToList();
         futureNodes = futureNodes.Except(nodeList).ToList();

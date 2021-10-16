@@ -6,8 +6,10 @@ using System;
 public class Endpoint : MonoBehaviour
 {
     // Configurable sprites
-    [SerializeField] private Sprite defaultSprite = null;
+    [SerializeField] Sprite destSprite = null;
+    [SerializeField] Sprite sourceSprite = null;
     [SerializeField] Sprite connectionSprite = null;
+    private Sprite defaultSprite;
 
     // Assiociated gameObjects
     private GameObject parentNode = null;
@@ -26,6 +28,8 @@ public class Endpoint : MonoBehaviour
 
     // State
     bool disconnected = false;
+    [SerializeField] public Role role;
+    public Edge linkedEdge;
 
     void Start()
     {
@@ -50,6 +54,23 @@ public class Endpoint : MonoBehaviour
     public Endpoint getOtherEndpoint()
     {
         return otherEndpoint.GetComponent<Endpoint>(); ;
+    }
+
+    public void initEndpoint(GameObject node, GameObject otherEndpoint, Role _role, bool setClickedFlag)
+    {
+        setParentNode(node);
+        processRole(_role);
+        setOtherEndpoint(otherEndpoint);
+        if(setClickedFlag)
+        {
+            SetClicked();
+        }
+    }
+
+    private void processRole(Role _role)
+    {
+        role = _role;
+        setEndpointSprite();
     }
 
     void Update()
@@ -106,7 +127,7 @@ public class Endpoint : MonoBehaviour
     {
         int sign = Math.Sign(transform.position.y - otherEndpoint.transform.position.y);
         float angle = sign * Vector2.Angle(idlePosition, transform.position - otherEndpoint.transform.position);
-        transform.eulerAngles = new Vector3(0f, 0f, angle + 180);
+        transform.eulerAngles = new Vector3(0f, 0f, angle);
     }
 
     // Mouse Movement Related Section
@@ -136,13 +157,13 @@ public class Endpoint : MonoBehaviour
     void setCursorConnect()
     {
         Cursor.visible = false;
-        gameObject.GetComponent<SpriteRenderer>().sprite = connectionSprite;
+        changeSprite(connectionSprite);
     }
 
     void setCursorDefault()
     {
         Cursor.visible = true;
-        gameObject.GetComponent<SpriteRenderer>().sprite = defaultSprite;
+        changeSprite(defaultSprite);
     }
 
     public void SetClicked()
@@ -164,8 +185,10 @@ public class Endpoint : MonoBehaviour
     {
         setCursorDefault();
         mouseDown = false;
+        Debug.Log(snapNode);
         if (snapNode == null)
         {
+            parentNode = null;
             disconnected = true;
         }
         else
@@ -185,18 +208,28 @@ public class Endpoint : MonoBehaviour
 
     public void createEdge()
     {
+        Debug.LogWarning("Creating edge");
+        
         Node ownNode = getParentNodeScript().getNode();
         Node otherNode = getOtherEndpoint().getParentNodeScript().getNode();
 
         if (!Node.doesEdgeExist(ownNode, otherNode))
         {
-            ownNode.addConnection(otherNode);
-            otherNode.addConnection(ownNode);
+            bool bidirect = role == Role.bidirect ? true : false;
+            if (role != Role.destination)
+            {
+                linkedEdge = Edge.createEdge(_srcNode: ownNode, _destNode: otherNode, _bidirect: bidirect);
+            }
+            else
+            {
+                linkedEdge = Edge.createEdge(_srcNode: otherNode, _destNode: ownNode, _bidirect: bidirect);
+            }
         }
         else
         {
             disconnected = true;
             parentNode = null;
+            return;
         }
     }
 
@@ -208,18 +241,35 @@ public class Endpoint : MonoBehaviour
 
         if (Node.doesEdgeExist(ownNode, otherNode))
         {
-            ownNode.removeConnection(otherNode);
-            otherNode.removeConnection(ownNode);
+            Edge.deleteEdge(ownNode, otherNode);
         }
     }
 
     public void setEndpointSprite()
     {
-        gameObject.GetComponent<SpriteRenderer>().sprite = defaultSprite;
+        if(role == Role.bidirect)
+        {
+            defaultSprite = destSprite;
+        }
+        else if(role == Role.source)
+        {
+            defaultSprite = sourceSprite;
+        }
+        else
+        {
+            defaultSprite = destSprite;
+        }
+        changeSprite(defaultSprite);
+    }
+
+    public void changeSprite(Sprite sprite)
+    {
+        gameObject.GetComponent<SpriteRenderer>().sprite = sprite;
     }
 
     private void deleteDisconnected()
     {
+        
         if (disconnected)
         {
             Vector3 delta = (otherEndpoint.transform.position - transform.position);
@@ -234,3 +284,4 @@ public class Endpoint : MonoBehaviour
         }
     }
 }
+

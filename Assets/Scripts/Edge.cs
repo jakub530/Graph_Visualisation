@@ -6,10 +6,10 @@ public class Edge
 {
     public Node source;
     public Node dest;
-    public int cost;
+    public double cost;
     public bool bidirect;
 
-    public Edge(Node _srcNode, Node _destNode, int _cost = 1, bool _bidirect = true)
+    public Edge(Node _srcNode, Node _destNode, double _cost = 1, bool _bidirect = true)
     {
         source = _srcNode;
         dest = _destNode;
@@ -27,45 +27,44 @@ public class Edge
         }
         else if (source == node)
         {
-            if(bidirect)
-            {
-                return (dest, Role.bidirect);
-            }
-            else
-            {
-                return (dest, Role.source);
-            }
-
+            return bidirect ? (dest, Role.bidirect) : (dest, Role.source);
         }
-        else if(source == dest)
+        else if(dest == node)
         {
-            if (bidirect)
-            {
-                return (source, Role.bidirect);
-            }
-            else
-            {
-                return (source, Role.destination);
-            }
+            return bidirect ? (source, Role.bidirect) : (source, Role.destination);
         }
         else
         {
+            Debug.Log(source.id);
+            Debug.Log(dest.id);
             Debug.LogError("Too many nodes found in edge");
             return (null, Role.invalid);
         }
     }
 
-
-    // Start is called before the first frame update
-    void Start()
+    public static Edge createEdge(Node _srcNode, Node _destNode, double _cost = 1, bool _bidirect = true)
     {
-        
+        Edge newEdge = new Edge(_srcNode, _destNode, _cost, _bidirect);
+        _srcNode.addConnection(newEdge);
+        _destNode.addConnection(newEdge);
+        return newEdge;
     }
 
-    // Update is called once per frame
-    void Update()
+    public static void deleteEdge(Node node1, Node node2)
     {
-        
+        Edge edge = node1.findConnectionByOtherNode(node2);
+        node1.removeConnection(edge);
+        node2.removeConnection(edge);
+    }
+
+    ~Edge()
+    {
+        Debug.Log("Destroying edge");
+    }
+
+    public override string ToString()
+    {
+        return base.ToString() + " src:" + source + " dest: " + dest + " bidirect: " + bidirect;
     }
 }
 
@@ -74,5 +73,22 @@ public enum Role
     source,
     destination,
     bidirect,
-    invalid
+    any,
+    invalid,
+}
+
+public static class RoleHelper
+{
+    public static Role OtherRole(Role role)
+    {
+        switch(role)
+        {
+            case Role.source:
+                return Role.destination;
+            case Role.destination:
+                return Role.source;
+            default:
+                return Role.bidirect;
+        }
+    }
 }

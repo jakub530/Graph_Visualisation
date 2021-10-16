@@ -28,8 +28,8 @@ public class StateTransition : MonoBehaviour
         if (time >= period)
         {
             time = time % period;
-            Debug.Log("Trigger Event");
-            state = state + 1 % 2;
+            //Debug.Log("Trigger Event");
+            state = (state + 1) % 2;
         }
     }
 
@@ -38,13 +38,8 @@ public class StateTransition : MonoBehaviour
         time = 0f;
     }
 
-    public void waitForClock()
+    public IEnumerator waitForClock()
     {
-        int currentState = state;
-        while (state == currentState)
-        {
-
-        }
-        return;
+        yield return new WaitForSeconds(1);
     }
 }

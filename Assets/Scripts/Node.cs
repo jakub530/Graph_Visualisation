@@ -5,48 +5,45 @@ using UnityEngine;
 
 public class Node 
 {
-    List<Edge> connections = new List<Edge>();
+    public List<Edge> connections = new List<Edge>();
     public int id;
     public GameObject vis;
     static int lastID = -1;
 
 
-    public void addConnection(Node destination, int cost = 1, bool activeDir = true)
+    public void addConnection(Edge newEdge)
     {
-        if (findConnectionByDestination(destination) == null)
+        connections.Add(newEdge);
+    }
+
+    public void removeConnection(Edge deletedEdge)
+    {
+        Debug.Log("Edge removed succesfully");
+        connections.Remove(deletedEdge);
+    }
+
+    public Role findNodeRole(Edge edge)
+    {
+        if(edge.bidirect)
         {
-            connections.Add(
-                new Edge(this, destination, cost, activeDir)
-            );
+            return Role.bidirect;
         }
         else
         {
-            Debug.LogError("Such connection already exists");
-        }
+            if(this==edge.dest)
+            {
+                return Role.destination;
+            }
+            else 
+            {
+                return Role.source;
+            }
+        }    
     }
 
-    public void removeConnection(Node destination)
+    public Edge findConnectionByOtherNode(Node otherNode)
     {
-        Edge edge = findConnectionByDestination(destination);
-        if(edge != null)
-        {
-            Debug.Log("Edge removed succesfully");
-            connections.Remove(edge);
-        }
-        else
-        {
-            Debug.LogError("Couldn't find node to remove");
-        }
-
-    }
-
-    public Edge findConnectionByDestination(Node destination)
-    {
-        List<Edge> edges = connections.Where(
-        _ => _.dest == destination || 
-        (_.source == destination && _.bidirect == true))
-        .ToList();
-
+        List<Edge> edges = connections.Where(_=>_.dest == otherNode || _.source == otherNode).ToList();
         if (edges.Count == 0)
         {
             return null;
@@ -62,17 +59,18 @@ public class Node
         }
     }
 
+
     // Find sources/bidirect nodes
     public List<Node> findSourceNodes()
     {
-        return findConnectedNodes(new List<Role>() { Role.source, Role.bidirect });
+        return findConnectedNodes(new List<Role>() { Role.destination, Role.bidirect });
     }
 
 
     // Find destination/bidirect nodes
     public List<Node> findDestinationNodes()
     {
-        return findConnectedNodes(new List<Role>() { Role.destination, Role.bidirect });
+        return findConnectedNodes(new List<Role>() { Role.source, Role.bidirect });
     }
     
     // Find all connected nodes
@@ -97,7 +95,7 @@ public class Node
 
     public static bool doesEdgeExist(Node node0, Node node1)
     {
-        if(node0.findConnectionByDestination(node1) == null && node1.findConnectionByDestination(node0) ==null)
+        if(node0.findConnectionByOtherNode(node1) == null && node1.findConnectionByOtherNode(node0) ==null)
         {
             return false;
         }
@@ -111,5 +109,10 @@ public class Node
     {
         lastID++;
         return lastID;
+    }
+
+    public override string ToString()
+    {
+        return base.ToString() + ": " + id.ToString();
     }
 }

@@ -2,11 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public class CameraController : MonoBehaviour
+public class DjikstraTest : MonoBehaviour
 {
-    [SerializeField] Camera orthographicCamera;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -19,9 +16,10 @@ public class CameraController : MonoBehaviour
         
     }
 
-    void OnGUI()
+    public void initDjikstra()
     {
-        orthographicCamera.orthographicSize += Input.mouseScrollDelta.y * 0.1f;
+        Djikstra newTest = new Djikstra();
+        newTest.setUp();
+        newTest.fullAlgorithm();
     }
-    
 }

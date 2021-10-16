@@ -25,18 +25,18 @@ public class ConnectLine : MonoBehaviour
     }
 
 
-    void createEndpoints(GameObject node)
+    void createEndpoints(GameObject node, Role role)
     {
         for(int i=0; i<2; i++)
         {
             endpoints[i] = Instantiate(endpointPrefab, transform.position, transform.rotation);
             endpoints[i].transform.SetParent(this.transform);
         }
-
-        endpointScript(endpoints[1]).setOtherEndpoint(endpoints[0]);
-        endpointScript(endpoints[0]).setOtherEndpoint(endpoints[1]);
-        endpointScript(endpoints[1]).SetClicked();
-        endpointScript(endpoints[0]).setParentNode(node);
+        Debug.Log(role.ToString());
+        endpointScript(endpoints[0]).initEndpoint(node:node,  otherEndpoint:endpoints[1],  _role:role, setClickedFlag:false);
+        
+        endpointScript(endpoints[1]).initEndpoint(node: null, otherEndpoint: endpoints[0], _role:RoleHelper.OtherRole(role), setClickedFlag: true);
+        Debug.Log(RoleHelper.OtherRole(role).ToString());
     }
 
     void updateSpriteSize()
@@ -57,9 +57,9 @@ public class ConnectLine : MonoBehaviour
         line.SetPositions(positionArray);
     }
 
-    public void createClickDown(GameObject nodeVis)
+    public void createClickDown(GameObject nodeVis, Role role)
     {
-        createEndpoints(nodeVis);
+        createEndpoints(nodeVis, role);
         updateSpriteSize();
     }
 
