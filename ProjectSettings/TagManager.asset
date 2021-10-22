@@ -8,6 +8,11 @@ TagManager:
   - Visualization
   - Clock
   - ControlEdgeCreation
+  - Nodes
+  - Edges
+  - QueueItem
+  - QueueContent
+  - Legend
   layers:
   - Default
   - TransparentFX

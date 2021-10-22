@@ -5,7 +5,7 @@ using UnityEngine;
 public class StateTransition : MonoBehaviour
 {
     List<Node> queue = new List<Node>();
-    [SerializeField] public float period = 1f;
+    [SerializeField] public float period = 0.1f;
     private float time = 0;
     public int state = 0;
     

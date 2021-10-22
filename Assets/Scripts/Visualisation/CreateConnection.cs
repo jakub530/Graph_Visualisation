@@ -25,6 +25,8 @@ public class CreateConnection : MonoBehaviour
     void OnMouseDown()
     {
         GameObject newConnection = Instantiate(Connection, transform.position, transform.rotation);
+        GameObject Edges = GameObject.FindGameObjectWithTag("Edges");
+        newConnection.transform.SetParent(Edges.transform);
         connectionScript = newConnection.GetComponent<ConnectLine>();
         connectionScript.createClickDown(nodeVis, role);
         gameObject.GetComponent<SpriteRenderer>().enabled = false;

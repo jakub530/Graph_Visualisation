@@ -8,28 +8,44 @@ public class NodeVis : MonoBehaviour
     private float radius = 2f;
     public Node attachedNode = null;
     [SerializeField] private Text text;
+    [SerializeField] int edgeCount;
+    [SerializeField] GameObject connectionCreator;
 
     // Start is called before the first frame update
     void Start()
     {
+
+    }
+
+    public void attachNode()
+    {
         attachedNode = new Node(gameObject.name, gameObject);
         setText(attachedNode.id.ToString());
+        GameObject Nodes = GameObject.FindGameObjectWithTag("Nodes");
+        gameObject.transform.SetParent(Nodes.transform);
+        gameObject.name = "Node:" + attachedNode.id.ToString();
+        //connectionCreator.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        GameObject closestNode = Helper.FindClosestGameObject(
+        /*GameObject closestNode = Helper.FindClosestGameObject(
             origin: transform.position,
             tag: "Node",
             exclusionList: new List<GameObject>() { gameObject }
-        );
+        );*/
 
         // Move away if something is in radius
-        if (Helper.CheckIfInRange(radius, gameObject, closestNode))
+        /*if (Helper.CheckIfInRange(radius, gameObject, closestNode))
         {
             moveAway(closestNode);
-        }
+        }*/
+    }
+
+    public void disableEdgeCreation()
+    {
+        connectionCreator.SetActive(false);
     }
 
     public void setText(string msg)

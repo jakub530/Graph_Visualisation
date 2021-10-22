@@ -39,6 +39,14 @@ public class Endpoint : MonoBehaviour
     public void setParentNode(GameObject node)
     {
         parentNode = node;
+        if(parentNode == null)
+        {
+            gameObject.name = "Endpoint:" + "null";
+        }
+        else
+        {
+            gameObject.name = "Endpoint:" + parentNode.name;
+        }
     }
 
     public NodeVis getParentNodeScript()
@@ -65,6 +73,13 @@ public class Endpoint : MonoBehaviour
         {
             SetClicked();
         }
+    }
+
+    public void scriptableInitEndpoint(GameObject node, GameObject otherEndpoint, Role _role)
+    {
+        setParentNode(node);
+        processRole(_role);
+        setOtherEndpoint(otherEndpoint);
     }
 
     private void processRole(Role _role)
@@ -110,22 +125,30 @@ public class Endpoint : MonoBehaviour
             exclusionList:new List<GameObject>() { getOtherEndpoint().parentNode }
         );
 
-        // Only snap node within the node range
-        if (!Helper.CheckIfInRange(1f, gameObject, newSnapNode))
+        // Happens when there is only one node
+        if(newSnapNode != null)
         {
-            newSnapNode = null;
-        }
+            // Only snap node within the node range
+            if (!Helper.CheckIfInRange(1f, gameObject, newSnapNode))
+            {
+                newSnapNode = null;
+            }
 
-        // Trigger script on snap node change
-        if (newSnapNode != snapNode)
-        {
-            onSnapNodeChange(newSnapNode);
+            // Trigger script on snap node change
+            if (newSnapNode != snapNode)
+            {
+                onSnapNodeChange(newSnapNode);
+            }
         }
     }
 
     void updateAngle()
     {
         int sign = Math.Sign(transform.position.y - otherEndpoint.transform.position.y);
+        if(sign == 0)
+        {
+            sign = 1;
+        }
         float angle = sign * Vector2.Angle(idlePosition, transform.position - otherEndpoint.transform.position);
         transform.eulerAngles = new Vector3(0f, 0f, angle);
     }
@@ -188,12 +211,12 @@ public class Endpoint : MonoBehaviour
         Debug.Log(snapNode);
         if (snapNode == null)
         {
-            parentNode = null;
+            setParentNode(null);
             disconnected = true;
         }
         else
         {
-            parentNode = snapNode;
+            setParentNode(snapNode);
             snapNode = null;
             createEdge();
         }     
@@ -208,13 +231,21 @@ public class Endpoint : MonoBehaviour
 
     public void createEdge()
     {
-        Debug.LogWarning("Creating edge");
+        //Debug.LogWarning("Creating edge");
+        
         
         Node ownNode = getParentNodeScript().getNode();
         Node otherNode = getOtherEndpoint().getParentNodeScript().getNode();
+        //Debug.Log(ownNode);
+        //Debug.Log(otherNode);
+
+        //Debug.Log(parentNode);
+
 
         if (!Node.doesEdgeExist(ownNode, otherNode))
         {
+            gameObject.transform.parent.name = "Edge:" + ownNode.id.ToString() + "-" + otherNode.id.ToString();
+
             bool bidirect = role == Role.bidirect ? true : false;
             if (role != Role.destination)
             {
@@ -228,7 +259,7 @@ public class Endpoint : MonoBehaviour
         else
         {
             disconnected = true;
-            parentNode = null;
+            setParentNode(null);
             return;
         }
     }
@@ -238,9 +269,10 @@ public class Endpoint : MonoBehaviour
         Node ownNode = getParentNodeScript().getNode();
         Node otherNode = getOtherEndpoint().getParentNodeScript().getNode();
 
-
+        Debug.Log("Attempt at deleting edge");
         if (Node.doesEdgeExist(ownNode, otherNode))
         {
+            Debug.Log("Deleting edge");
             Edge.deleteEdge(ownNode, otherNode);
         }
     }

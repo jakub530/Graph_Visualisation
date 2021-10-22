@@ -44,7 +44,7 @@ public class VisExperiments : MonoBehaviour
 
     public void cascadeColors()
     {
-        Debug.Log("Darkenning");
+        //Debug.Log("Darkenning");
         List<Node> futureNodes = new List<Node>();
         foreach (Node node in nodeList)
         {
@@ -52,10 +52,10 @@ public class VisExperiments : MonoBehaviour
         }
         foreach (Node node in futureNodes)
         {
-            Debug.Log(node);
+            //Debug.Log(node);
             foreach (Edge edge in node.connections)
             {
-                Debug.Log(edge);
+                //Debug.Log(edge);
             }
 
         }

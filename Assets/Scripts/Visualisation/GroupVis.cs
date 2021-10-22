@@ -4,28 +4,29 @@ using UnityEngine;
 
 public class GroupVis 
 {
-    List<Node> nodes = new List<Node>();
-    Color32 color;
-    string name;
+    public List<Node> nodes = new List<Node>();
+    public Color32 color;
+    public string name;
 
-    void addNode(Node newNode)
+    public void addNode(Node newNode)
     {
         nodes.Add(newNode);
     }
 
-    void removeNode(Node node)
+    public void removeNode(Node node)
     {
         nodes.Remove(node);
     }
 
-    GroupVis(Color32 _color, List<Node> initNodes, string _name)
+    public GroupVis(Color32 _color, List<Node> initNodes, string _name)
     {
-        color = color;
+        color = _color;
         name = _name;
         nodes = initNodes;
+        GroupVis.getLegend().createLegend(name, color);
     }
 
-    void updateColors()
+    public void updateColors()
     {
         foreach(var node in nodes)
         {
@@ -45,5 +46,12 @@ public class GroupVis
     void Update()
     {
         
+    }
+
+    static LegendController getLegend()
+    {
+        GameObject legendObject = GameObject.FindGameObjectWithTag("Legend");
+        LegendController legend = legendObject.GetComponent<LegendController>();
+        return legend;
     }
 }

@@ -8,6 +8,18 @@ public class Djikstra
     List<DjikstraNode> allNodes = new List<DjikstraNode>();
     StateTransition clock;
 
+    // Necessary variables for algorithm
+    DjikstraNode startNode;
+    DjikstraNode endNode;
+    List<DjikstraNode> Q;
+    bool endFlag = false;
+
+    List<string> propNames = new List<string>() { "Distance", "Previous node" , "Test" };
+
+// Groups 
+    GroupVis visitedNodses;
+    GroupVis currentNode;
+
     public void setUp()
     {
         List<Node> nodes = AlgorithmUtility.getAllNodes();
@@ -20,32 +32,58 @@ public class Djikstra
 
     public void Update()
     {
-        Debug.Log("Updating");
+        //Debug.Log("Updating");
     }
 
-    public IEnumerator fullAlgorithm()
+    public void initAlgorithm()
     {
-        DjikstraNode startNode = allNodes.Where(_ => _.node.id == 0).First();
-        DjikstraNode endNode = allNodes.Where(_ => _.node.id == 10).First();
-        List<DjikstraNode> Q = allNodes;
+        startNode = allNodes.Where(_ => _.node.id == 0).First();
+        endNode = allNodes.Where(_ => _.node.id == 10).First();
+        Q = new List<DjikstraNode>() { startNode };
         startNode.distance = 0;
-        int step = 0;
-        while(Q.Count > 0)
+        visitedNodses = new GroupVis(Color.gray, new List<Node>(), "Visited Nodes");
+        currentNode   = new GroupVis(Color.red, new List<Node>() { startNode.node }, "Current Node");
+        updateColors();
+    }
+
+    public void updateColors()
+    {
+        visitedNodses.updateColors();
+        currentNode.updateColors();
+    }
+
+    public bool algorithmOuter()
+    {
+        bool step;
+        DjikstraNode node;
+        (node, step) = algorithmStep();
+        visitedNodses.addNode(currentNode.nodes.First());
+        //Debug.Log("Current Node:"+ currentNode.nodes.First());
+        if(node!=null)
         {
-            yield return new WaitForSeconds(1f);
-            step++;
+            currentNode.nodes = new List<Node>() { node.node };
+        }
+        else
+        {
+            currentNode.nodes = new List<Node>();
+        }
+
+        updateColors();
+        updateQueue();
+        return step;
+    }
+
+    public (DjikstraNode, bool) algorithmStep()
+    {
+        DjikstraNode u;
+        if (Q.Count > 0)
+        {
             Q = Q.OrderBy(_ => _.distance).ToList();
-
-            DjikstraNode u = Q.First();
-            Debug.Log("Step: " + step.ToString());
-            foreach(var node in Q)
-            {
-                //Debug.Log("Queue Item " + node.node.id);
-            }
-
+            u = Q.First();
+            //Debug.Log(u.node);
             if (u == endNode)
             {
-                break;
+                endFlag = true;
             }
             Q.Remove(u);
             foreach(var x in u.node.findDestinationNodes())
@@ -54,17 +92,46 @@ public class Djikstra
                 double alt = u.distance + u.node.findConnectionByOtherNode(v.node).cost;
                 if(alt < v.distance)
                 {
+                    Q.Add(v);
                     v.distance = alt;
                     v.prevNode = u;
                 }
             }
         }
-        Debug.Log("The cost is " + endNode.distance.ToString());
+        else
+        {
+            u = null;
+            endFlag = true;
+        }
+        return (u, endFlag);
     }
 
+    public void updateQueue()
+    {
+        List<QueueItemContent> queueItems = new List<QueueItemContent>();
+
+        foreach(DjikstraNode node in Q)
+        {
+            queueItems.Add(createQueueItem(node));
+        }
+
+        GameObject queueContent = GameObject.FindGameObjectWithTag("QueueContent");
+        QueueGeneration queueGeneration = queueContent.GetComponent<QueueGeneration>();
+
+        queueGeneration.renderQueue(queueItems);
 
 
-    
+    }
+
+    public QueueItemContent createQueueItem(DjikstraNode node)
+    {
+        QueueItemContent queueItem = new QueueItemContent(node.getNodeName());
+        List<string> propValues = new List<string>() { node.distance.ToString(), node.prevNode.getNodeName(), "prop" };
+
+        queueItem.populateProps(propNames, propValues);
+        return queueItem;
+    }
+
 }
 
 public class DjikstraNode
@@ -76,6 +143,11 @@ public class DjikstraNode
     public DjikstraNode(Node _node)
     {
         node = _node;
+    }
+
+    public string getNodeName()
+    {
+        return node.id.ToString();
     }
 }
 
