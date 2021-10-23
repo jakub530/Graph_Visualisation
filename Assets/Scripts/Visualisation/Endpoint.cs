@@ -25,6 +25,7 @@ public class Endpoint : MonoBehaviour
     float deletetionRadius = 1f;
     float nodeRadius = 0.5f;
     private Vector2 idlePosition = new Vector2(1f, 0f);
+    public float angle;
 
     // State
     bool disconnected = false;
@@ -47,6 +48,11 @@ public class Endpoint : MonoBehaviour
         {
             gameObject.name = "Endpoint:" + parentNode.name;
         }
+    }
+
+    public GameObject getParentNode()
+    {
+        return parentNode;
     }
 
     public NodeVis getParentNodeScript()
@@ -149,7 +155,7 @@ public class Endpoint : MonoBehaviour
         {
             sign = 1;
         }
-        float angle = sign * Vector2.Angle(idlePosition, transform.position - otherEndpoint.transform.position);
+        angle = sign * Vector2.Angle(idlePosition, transform.position - otherEndpoint.transform.position);
         transform.eulerAngles = new Vector3(0f, 0f, angle);
     }
 

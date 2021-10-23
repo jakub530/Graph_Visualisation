@@ -9,7 +9,8 @@ public class ConnectLine : MonoBehaviour
     private List<GameObject> endpoints = new List<GameObject>() { null, null };
     private LineRenderer line;
     private List<float> spriteSize;
-    
+    [SerializeField] public float angle;
+    private Vector2 idlePosition = new Vector2(1f, 0f);
 
     private Endpoint endpointScript(GameObject endpointObject)
     {
@@ -24,12 +25,62 @@ public class ConnectLine : MonoBehaviour
     void Update()
     {
         drawLine();
+        moveCostLabel();
     }
 
-    void createCostLabel()
+    void moveCostLabel()
     {
-        Vector3 position = (endpoints[0].transform.position + endpoints[1].transform.position) / 2;
-        edgeCost.transform.position = position;
+        GameObject node0 = endpoints[0].GetComponent<Endpoint>().getParentNode();
+        GameObject node1 = endpoints[1].GetComponent<Endpoint>().getParentNode();
+        Vector3 averegePosition = (node0.transform.position + node1.transform.position) / 2;
+        Vector2 posDifference = node1.transform.position - node0.transform.position;
+        Vector2 offsetDirection = Vector2.Perpendicular(posDifference.normalized);
+
+        angle = Vector2.SignedAngle(idlePosition, posDifference);
+
+
+        if (node0.transform.position.y < node1.transform.position.y)
+        {
+            //angle += 180;
+        }
+
+
+        if (angle >90)
+        {
+
+        } else if(angle > 0)
+        {
+
+        } else if (angle > -90 )
+        {
+
+        }else
+        {
+
+        }
+
+
+        float offsetMagnitude = 0.5f;
+        Vector2 offset = offsetMagnitude * offsetDirection;
+        Vector3 newOffset = offset;
+        Vector3 newPos;
+        if (Mathf.Abs(angle) > 90)
+        {
+            newPos = averegePosition - newOffset;
+            angle += 180;
+        }
+        else
+        {
+            newPos = averegePosition + newOffset;
+   
+        }
+            edgeCost.transform.eulerAngles = new Vector3(0f, 0f, angle);
+        if (edgeCost.transform.position != newPos)
+        {
+            edgeCost.transform.position = newPos;
+            
+        }
+
     }
 
 
