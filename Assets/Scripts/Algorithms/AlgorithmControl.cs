@@ -6,10 +6,11 @@ using UnityEngine.Events;
 public class AlgorithmControl : MonoBehaviour
 {
     public NodeClickEvent nodeClickEvent;
+    public Algorithm activeAlgorithm;
 
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         if (nodeClickEvent == null)
         {
@@ -26,19 +27,17 @@ public class AlgorithmControl : MonoBehaviour
 
     void Ping(GameObject node)
     {
-        Debug.Log("Alorithm Control");
+        Debug.Log("Alorithm Control Ping");
         Debug.Log(node);
+    }
+
+    public void setActiveAlgorithm(Algorithm algorithm)
+    {
+        activeAlgorithm = algorithm;
     }
 }
 
-public class Algorithm
-{
 
-
-
-
-
-}
 
 public class NodeClickEvent : UnityEvent<GameObject>
 {

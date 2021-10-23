@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class Djikstra
+public class Djikstra : Algorithm
 {
     List<DjikstraNode> allNodes = new List<DjikstraNode>();
-    StateTransition clock;
 
     // Necessary variables for algorithm
     DjikstraNode startNode;
@@ -16,33 +15,35 @@ public class Djikstra
 
     List<string> propNames = new List<string>() { "Distance", "Previous node" , "Test" };
 
-// Groups 
+ // Groups 
     GroupVis visitedNodses;
     GroupVis currentNode;
 
-    public void setUp()
+
+
+
+    public override void algorithmPreInitialization()
     {
+        nodesToSelect = 2;
+    }
+
+    public override void algorithmInitialization(List<GameObject> selectedNodes)
+    {
+        int startNodeID = selectedNodes[0].GetComponent<NodeVis>().attachedNode.id;
+        int endNodeID   = selectedNodes[1].GetComponent<NodeVis>().attachedNode.id;
+
         List<Node> nodes = AlgorithmUtility.getAllNodes();
-        foreach(Node node in nodes)
+        foreach (Node node in nodes)
         {
             allNodes.Add(new DjikstraNode(node));
         }
-        clock = GameObject.FindGameObjectWithTag("Clock").GetComponent<StateTransition>();
-    }
 
-    public void Update()
-    {
-        //Debug.Log("Updating");
-    }
-
-    public void initAlgorithm()
-    {
-        startNode = allNodes.Where(_ => _.node.id == 0).First();
-        endNode = allNodes.Where(_ => _.node.id == 10).First();
+        startNode = allNodes.Where(_ => _.node.id == startNodeID).First();
+        endNode = allNodes.Where(_ => _.node.id == endNodeID).First();
         Q = new List<DjikstraNode>() { startNode };
         startNode.distance = 0;
         visitedNodses = new GroupVis(Color.gray, new List<Node>(), "Visited Nodes");
-        currentNode   = new GroupVis(Color.red, new List<Node>() { startNode.node }, "Current Node");
+        currentNode = new GroupVis(Color.red, new List<Node>() { startNode.node }, "Current Node");
         updateColors();
     }
 
@@ -52,13 +53,14 @@ public class Djikstra
         currentNode.updateColors();
     }
 
-    public bool algorithmOuter()
+    public override State runStep()
     {
+        Debug.Log("running Step");
         bool step;
         DjikstraNode node;
         (node, step) = algorithmStep();
         visitedNodses.addNode(currentNode.nodes.First());
-        //Debug.Log("Current Node:"+ currentNode.nodes.First());
+
         if(node!=null)
         {
             currentNode.nodes = new List<Node>() { node.node };
@@ -70,7 +72,7 @@ public class Djikstra
 
         updateColors();
         updateQueue();
-        return step;
+        return step ? State.inactive : State.active;
     }
 
     public (DjikstraNode, bool) algorithmStep()

@@ -13,6 +13,7 @@ TagManager:
   - QueueItem
   - QueueContent
   - Legend
+  - AlgorithmControl
   layers:
   - Default
   - TransparentFX

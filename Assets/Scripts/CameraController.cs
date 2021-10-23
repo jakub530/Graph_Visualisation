@@ -22,7 +22,7 @@ public class CameraController : MonoBehaviour
         Vector3 curScreenPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
         Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint); //+ offset;
         Vector3 posDiff = transform.position - curPosition;
-        Debug.Log(posDiff.magnitude);
+        //Debug.Log(posDiff.magnitude);
 
         transform.position = - posDiff * 5f * Time.deltaTime + transform.position;
     }
@@ -38,13 +38,13 @@ public class CameraController : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(2))
         {
-            Debug.Log("Clicked middle mouse button");
+            //Debug.Log("Clicked middle mouse button");
             middleClicked = true;
             mouseClick();
         }
         if (Input.GetMouseButtonUp(2))
         {
-            Debug.Log("Unclicked middle mouse button");
+            //Debug.Log("Unclicked middle mouse button");
             middleClicked = false;
         }
         if(middleClicked)

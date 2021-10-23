@@ -41,7 +41,6 @@ public class NodeVis : MonoBehaviour
         //connectionCreator.SetActive(false);
     }
 
-    // Update is called once per frame
     void Update()
     {
         /*GameObject closestNode = Helper.FindClosestGameObject(
