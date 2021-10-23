@@ -119,8 +119,6 @@ public class Djikstra
         QueueGeneration queueGeneration = queueContent.GetComponent<QueueGeneration>();
 
         queueGeneration.renderQueue(queueItems);
-
-
     }
 
     public QueueItemContent createQueueItem(DjikstraNode node)

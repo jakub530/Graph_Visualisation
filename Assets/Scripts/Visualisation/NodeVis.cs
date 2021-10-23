@@ -1,7 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
+
+
 
 public class NodeVis : MonoBehaviour
 {
@@ -10,12 +13,23 @@ public class NodeVis : MonoBehaviour
     [SerializeField] private Text text;
     [SerializeField] int edgeCount;
     [SerializeField] GameObject connectionCreator;
+    private NodeClickEvent nodeClickEvent;
+
 
     // Start is called before the first frame update
     void Start()
     {
-
+        connectClickEvent();
     }
+
+    void connectClickEvent()
+    {
+        GameObject algorithmControlObject = GameObject.FindGameObjectWithTag("AlgorithmControl");
+        AlgorithmControl algorithmControl = algorithmControlObject.GetComponent<AlgorithmControl>();
+        nodeClickEvent = algorithmControl.nodeClickEvent;
+    }
+
+
 
     public void attachNode()
     {
@@ -58,7 +72,10 @@ public class NodeVis : MonoBehaviour
         GameObject visualization = GameObject.FindGameObjectWithTag("Visualization");
         VisExperiments visExp = visualization.GetComponent<VisExperiments>();
         visExp.ClickedNode(gameObject);
+        nodeClickEvent.Invoke(gameObject);
     }
+
+
 
     // Get Attached Node
     public Node getNode()

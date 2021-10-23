@@ -30,55 +30,34 @@ public class ConnectLine : MonoBehaviour
 
     void moveCostLabel()
     {
-        GameObject node0 = endpoints[0].GetComponent<Endpoint>().getParentNode();
-        GameObject node1 = endpoints[1].GetComponent<Endpoint>().getParentNode();
-        Vector3 averegePosition = (node0.transform.position + node1.transform.position) / 2;
-        Vector2 posDifference = node1.transform.position - node0.transform.position;
+        GameObject ref0 = endpoints[0];
+        GameObject ref1 = endpoints[1];
+        Vector3 averegePosition = (ref0.transform.position + ref1.transform.position) / 2;
+        Vector2 posDifference = ref0.transform.position - ref1.transform.position;
         Vector2 offsetDirection = Vector2.Perpendicular(posDifference.normalized);
 
         angle = Vector2.SignedAngle(idlePosition, posDifference);
 
 
-        if (node0.transform.position.y < node1.transform.position.y)
-        {
-            //angle += 180;
-        }
-
-
-        if (angle >90)
-        {
-
-        } else if(angle > 0)
-        {
-
-        } else if (angle > -90 )
-        {
-
-        }else
-        {
-
-        }
-
-
-        float offsetMagnitude = 0.5f;
+        float offsetMagnitude = 0.2f;
         Vector2 offset = offsetMagnitude * offsetDirection;
-        Vector3 newOffset = offset;
         Vector3 newPos;
+        Vector3 v3Offset = offset;
         if (Mathf.Abs(angle) > 90)
         {
-            newPos = averegePosition - newOffset;
+            newPos = averegePosition - v3Offset;
             angle += 180;
         }
         else
         {
-            newPos = averegePosition + newOffset;
-   
+            newPos = averegePosition + v3Offset;
         }
-            edgeCost.transform.eulerAngles = new Vector3(0f, 0f, angle);
+        
         if (edgeCost.transform.position != newPos)
         {
             edgeCost.transform.position = newPos;
-            
+            edgeCost.transform.eulerAngles = new Vector3(0f, 0f, angle);
+
         }
 
     }

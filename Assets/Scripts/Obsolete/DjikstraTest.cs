@@ -8,6 +8,7 @@ public class DjikstraTest : MonoBehaviour
     bool runAlgorithmFlag = false;
     Djikstra djikstra;
     StateTransition clock;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,4 +36,6 @@ public class DjikstraTest : MonoBehaviour
         djikstra.initAlgorithm();
         runAlgorithmFlag = true;
     }
+
+
 }
