@@ -5,16 +5,15 @@ using UnityEngine;
 public class Algorithm : MonoBehaviour
 {
     int intenalClock = 0;
-    List<GameObject> selectedNodes;
+    int selectedNodes = 0;
     public int nodesToSelect = 0;
     State state = State.inactive;
-
-    
-
 
     StateTransition clock;
     AlgorithmControl algorithmControl;
     NodeClickEvent nodeClickEvent;
+
+    public Dictionary<string, GroupVis> visualGroups;
 
     public void Start()
     {
@@ -35,17 +34,23 @@ public class Algorithm : MonoBehaviour
     {
         if(state == State.pending)
         {
-            if(selectedNodes.Count < nodesToSelect)
+            if(selectedNodes < nodesToSelect)
             {
-                selectedNodes.Add(node);
+                processNodeClick(selectedNodes, node);
+                selectedNodes++;
 
-                if(selectedNodes.Count == nodesToSelect)
+                if(selectedNodes == nodesToSelect)
                 {
-                    algorithmInitialization(selectedNodes);
+                    algorithmInitialization();
                     state = State.active;
                 }
             }
         }
+    }
+
+    public virtual void processNodeClick(int index, GameObject node)
+    {
+
     }
 
     public void runAlgorithm()
@@ -68,7 +73,7 @@ public class Algorithm : MonoBehaviour
         return State.inactive;
     }
 
-    public virtual void algorithmInitialization(List<GameObject> selectedNodes)
+    public virtual void algorithmInitialization()
     {
         Debug.Log("You should run actual method");
     }
@@ -82,13 +87,15 @@ public class Algorithm : MonoBehaviour
 
     public void algorithmClick()
     {
-        selectedNodes = new List<GameObject>();
+        LegendController.getLegend().clearLegends();
+        clearColor();
+        selectedNodes = 0;
         algorithmPreInitialization();
         algorithmControl.setActiveAlgorithm(this);
 
         if(nodesToSelect == 0)
         {
-            algorithmInitialization(selectedNodes);
+            algorithmInitialization();
             state = State.active;
         }
         else
@@ -97,6 +104,25 @@ public class Algorithm : MonoBehaviour
         }
     }
 
+    public void updateQueue(List<AlgorithmNode> Q)
+    {
+        GameObject queueContent = GameObject.FindGameObjectWithTag("QueueContent");
+        QueueGeneration queueGeneration = queueContent.GetComponent<QueueGeneration>();
+        queueGeneration.renderQueue(Q);
+    }
+
+    public void updateColors()
+    {
+        foreach(GroupVis group in  visualGroups.Values)
+        {
+            group.updateColors();
+        }
+    }
+
+    public void clearColor()
+    {
+        AlgorithmUtility.changeAllNodeColor(Color.grey);
+    }
 }
 
 public enum State

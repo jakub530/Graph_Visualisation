@@ -48,6 +48,7 @@ MonoBehaviour:
   endpointPrefab: {fileID: 3895832757873186027, guid: b124c2ebfd378d64a847b1f706ee95bc, type: 3}
   edgeCost: {fileID: 3186655626900650525}
   angle: 0
+  edgeInput: {fileID: 6202587853829273616}
 --- !u!120 &8751035710469969619
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -435,7 +436,19 @@ MonoBehaviour:
   m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 575033004520615392}
+        m_TargetAssemblyTypeName: ConnectLine, Assembly-CSharp
+        m_MethodName: updatedEdgeCost
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []

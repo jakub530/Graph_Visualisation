@@ -38,7 +38,6 @@ public class VisExperiments : MonoBehaviour
         {
             NodeVis vis = node.GetComponent<NodeVis>();
             vis.setColor(Color.blue);
-            //vis.setColor(new Color(0.7f, 0.3f, 0.2f));
         }
     }
 

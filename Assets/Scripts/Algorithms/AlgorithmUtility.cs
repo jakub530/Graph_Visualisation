@@ -15,4 +15,14 @@ public class AlgorithmUtility
         }
         return allNodes;
     }
+
+    static public void changeAllNodeColor(Color color)
+    {
+        GameObject[] nodes = GameObject.FindGameObjectsWithTag("Node");
+        foreach (var node in nodes)
+        {
+            NodeVis vis = node.GetComponent<NodeVis>();
+            vis.setColor(color);
+        }
+    }
 }

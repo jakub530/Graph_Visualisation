@@ -5,79 +5,142 @@ using System.Linq;
 
 public class Djikstra : Algorithm
 {
-    List<DjikstraNode> allNodes = new List<DjikstraNode>();
-
     // Necessary variables for algorithm
+    List<DjikstraNode> allNodes;
+    List<DjikstraNode> Q;
     DjikstraNode startNode;
     DjikstraNode endNode;
-    List<DjikstraNode> Q;
-    bool endFlag = false;
-
-    List<string> propNames = new List<string>() { "Distance", "Previous node" , "Test" };
-
- // Groups 
-    GroupVis visitedNodses;
-    GroupVis currentNode;
-
-
+    DjikstraNode backTrackNode;
+    Phase phase;
 
 
     public override void algorithmPreInitialization()
     {
+        // Need to select start and end node
         nodesToSelect = 2;
+        configureGroupVis();
+        phase = Phase.search;
+        allNodes = AlgorithmUtility.getAllNodes().Select(_ => new DjikstraNode(_)).ToList();
     }
 
-    public override void algorithmInitialization(List<GameObject> selectedNodes)
+    private void configureGroupVis()
     {
-        int startNodeID = selectedNodes[0].GetComponent<NodeVis>().attachedNode.id;
-        int endNodeID   = selectedNodes[1].GetComponent<NodeVis>().attachedNode.id;
-
-        List<Node> nodes = AlgorithmUtility.getAllNodes();
-        foreach (Node node in nodes)
+        visualGroups = new Dictionary<string, GroupVis>()
         {
-            allNodes.Add(new DjikstraNode(node));
-        }
+            { "Visited Nodes", new GroupVis(Color.cyan, new List<Node>(), "Visited Nodes") },
+            { "Start Node",    new GroupVis(Color.green, new List<Node>() , "Start Node") },
+            { "End Node",      new GroupVis(Color.yellow, new List<Node>() , "End Node") },
+            { "Active Node",   new GroupVis(Color.red, new List<Node>() , "Active Node") },
+            { "Path Nodes",   new GroupVis(Color.blue, new List<Node>() , "Path Nodes") },
+        };
+    }
 
-        startNode = allNodes.Where(_ => _.node.id == startNodeID).First();
-        endNode = allNodes.Where(_ => _.node.id == endNodeID).First();
-        Q = new List<DjikstraNode>() { startNode };
-        startNode.distance = 0;
-        visitedNodses = new GroupVis(Color.gray, new List<Node>(), "Visited Nodes");
-        currentNode = new GroupVis(Color.red, new List<Node>() { startNode.node }, "Current Node");
+    public override void processNodeClick(int index, GameObject node)
+    {
+        int nodeId = node.GetComponent<NodeVis>().attachedNode.id;
+        switch (index)
+        {
+            case 0:
+                startNode = DjikstraNode.findNodeById(allNodes, nodeId);
+                getGroup(Groups.start).startNewList(startNode.getNode());
+                break;
+            case 1:
+                endNode =   DjikstraNode.findNodeById(allNodes, nodeId);
+                getGroup(Groups.end).startNewList(endNode.getNode());
+                break;
+        }
         updateColors();
     }
 
-    public void updateColors()
+    private enum Groups
     {
-        visitedNodses.updateColors();
-        currentNode.updateColors();
+        visited,
+        active,
+        start,
+        end,
+        path
     }
+
+    private enum Phase
+    {
+        search,
+        backtrack,
+        finished
+    }
+
+    private GroupVis getGroup(Groups group)
+    {
+        switch (group)
+        {
+            case Groups.visited:
+                return visualGroups["Visited Nodes"];
+            case Groups.active:
+                return visualGroups["Active Node"];
+            case Groups.start:
+                return visualGroups["Start Node"];
+            case Groups.end:
+                return visualGroups["End Node"];
+            case Groups.path:
+                return visualGroups["Path Nodes"];
+            default:
+                return null;
+        }
+    }
+
+    public override void algorithmInitialization()
+    {
+        Q = new List<DjikstraNode>() { startNode };
+        startNode.distance = 0;
+        updateColors();
+    }
+
 
     public override State runStep()
     {
         Debug.Log("running Step");
-        bool step;
-        DjikstraNode node;
-        (node, step) = algorithmStep();
-        visitedNodses.addNode(currentNode.nodes.First());
-
-        if(node!=null)
+        if(phase == Phase.search)
         {
-            currentNode.nodes = new List<Node>() { node.node };
+            (DjikstraNode node, bool reachedGoal) = searchAlgorithm();
+            getGroup(Groups.visited).addNode(getGroup(Groups.active).getFirstNode());
+            getGroup(Groups.active).startNewList(node.getNode());
+            if(reachedGoal)
+            {
+                phase = Phase.backtrack;
+                backTrackNode = node;
+            }
+        }
+        else if (phase == Phase.backtrack)
+        {
+            backTrackAlgorithm();
+        }
+
+
+
+
+
+        updateColors();
+        updateQueue(ConvertList(Q));
+        return phase == Phase.finished ? State.inactive : State.active;
+    }
+
+    public void backTrackAlgorithm()
+    {
+        getGroup(Groups.path).addNode(backTrackNode.getNode());
+        if(backTrackNode != startNode)
+        {
+            backTrackNode = backTrackNode.prevNode;
         }
         else
         {
-            currentNode.nodes = new List<Node>();
+            phase = Phase.finished;
         }
-
-        updateColors();
-        updateQueue();
-        return step ? State.inactive : State.active;
     }
 
-    public (DjikstraNode, bool) algorithmStep()
+    public (DjikstraNode, bool) searchAlgorithm()
     {
         DjikstraNode u;
+        bool endFlag = false;
+
         if (Q.Count > 0)
         {
             Q = Q.OrderBy(_ => _.distance).ToList();
@@ -108,35 +171,18 @@ public class Djikstra : Algorithm
         return (u, endFlag);
     }
 
-    public void updateQueue()
+    private List<AlgorithmNode> ConvertList(List<DjikstraNode> nodes)
     {
-        List<QueueItemContent> queueItems = new List<QueueItemContent>();
-
-        foreach(DjikstraNode node in Q)
-        {
-            queueItems.Add(createQueueItem(node));
-        }
-
-        GameObject queueContent = GameObject.FindGameObjectWithTag("QueueContent");
-        QueueGeneration queueGeneration = queueContent.GetComponent<QueueGeneration>();
-
-        queueGeneration.renderQueue(queueItems);
+        return nodes.Select(_ => (AlgorithmNode)_).ToList();
     }
 
-    public QueueItemContent createQueueItem(DjikstraNode node)
-    {
-        QueueItemContent queueItem = new QueueItemContent(node.getNodeName());
-        List<string> propValues = new List<string>() { node.distance.ToString(), node.prevNode.getNodeName(), "prop" };
-
-        queueItem.populateProps(propNames, propValues);
-        return queueItem;
-    }
 
 }
 
-public class DjikstraNode
+
+
+public class DjikstraNode : AlgorithmNode
 {
-    public Node node = null;
     public double distance =  Mathf.Infinity;
     public DjikstraNode prevNode = null;
 
@@ -145,9 +191,20 @@ public class DjikstraNode
         node = _node;
     }
 
-    public string getNodeName()
+   
+
+    public override (string nodeName, List<string> propLabels, List<string> propValues) getProps()
     {
-        return node.id.ToString();
+        string nodeName = getNodeName();
+        List<string> propLabels = new List<string>() { "Distance", "Previous Node"};
+        List<string> propValues = new List<string>() { distance.ToString(), prevNode.getNodeName()};
+
+        return (nodeName: nodeName, propLabels: propLabels, propValues: propValues);
+    }
+
+    public static DjikstraNode findNodeById(List<DjikstraNode> nodes, int id)
+    {
+        return nodes.Where(_ => _.node.id == id).First(); 
     }
 }
 

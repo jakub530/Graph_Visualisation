@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class GroupVis 
 {
@@ -10,7 +11,11 @@ public class GroupVis
 
     public void addNode(Node newNode)
     {
-        nodes.Add(newNode);
+        if (newNode != null)
+        {
+            nodes.Add(newNode);
+        }
+
     }
 
     public void removeNode(Node node)
@@ -18,12 +23,36 @@ public class GroupVis
         nodes.Remove(node);
     }
 
+    public void startNewList(Node node)
+    {
+        if (node != null)
+        {
+            nodes = new List<Node>() { node };
+        }
+        else
+        {
+            nodes = new List<Node>();
+        }
+    }
+
+    public Node getFirstNode()
+    {
+        if(nodes.Count > 0)
+        {
+            return nodes.First();
+        }       
+        else
+        {
+            return null;
+        }
+    }
+
     public GroupVis(Color32 _color, List<Node> initNodes, string _name)
     {
         color = _color;
         name = _name;
         nodes = initNodes;
-        GroupVis.getLegend().createLegend(name, color);
+        LegendController.getLegend().createLegend(name, color);
     }
 
     public void updateColors()
@@ -48,10 +77,5 @@ public class GroupVis
         
     }
 
-    static LegendController getLegend()
-    {
-        GameObject legendObject = GameObject.FindGameObjectWithTag("Legend");
-        LegendController legend = legendObject.GetComponent<LegendController>();
-        return legend;
-    }
+
 }

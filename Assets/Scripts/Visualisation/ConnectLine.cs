@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ConnectLine : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class ConnectLine : MonoBehaviour
     private List<float> spriteSize;
     [SerializeField] public float angle;
     private Vector2 idlePosition = new Vector2(1f, 0f);
+    public InputField edgeInput;
+    public Edge connectedEdge;
 
     private Endpoint endpointScript(GameObject endpointObject)
     {
@@ -20,12 +23,33 @@ public class ConnectLine : MonoBehaviour
     void Start()
     {
         line = gameObject.GetComponent<LineRenderer>();
+        edgeInput = edgeCost.GetComponent<InputField>();
     }
 
     void Update()
     {
         drawLine();
         moveCostLabel();
+    }
+
+    public void updatedEdgeCost()
+    {
+        float cost = float.Parse(edgeInput.text);
+        connectedEdge.cost = cost;
+    }
+
+    public void updateEdge(Edge edge)
+    {
+        connectedEdge = edge;
+        if (connectedEdge != null)
+        {
+            edgeInput.text = connectedEdge.cost.ToString();
+        }
+        else
+        {
+            edgeInput.text = "";
+        }
+
     }
 
     void moveCostLabel()
@@ -115,6 +139,7 @@ public class ConnectLine : MonoBehaviour
     public void createClickDown(GameObject nodeVis, Role role)
     {
         createEndpoints(nodeVis, role);
+        updateEdge(null);
         updateSpriteSize();
     }
 

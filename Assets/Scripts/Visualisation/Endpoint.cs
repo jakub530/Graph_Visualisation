@@ -30,7 +30,6 @@ public class Endpoint : MonoBehaviour
     // State
     bool disconnected = false;
     [SerializeField] public Role role;
-    public Edge linkedEdge;
 
     void Start()
     {
@@ -68,6 +67,11 @@ public class Endpoint : MonoBehaviour
     public Endpoint getOtherEndpoint()
     {
         return otherEndpoint.GetComponent<Endpoint>(); ;
+    }
+
+    private ConnectLine getConnectLine()
+    {
+        return gameObject.transform.parent.GetComponent<ConnectLine>();
     }
 
     public void initEndpoint(GameObject node, GameObject otherEndpoint, Role _role, bool setClickedFlag)
@@ -237,30 +241,31 @@ public class Endpoint : MonoBehaviour
 
     public void createEdge()
     {
-        //Debug.LogWarning("Creating edge");
+
         
         
         Node ownNode = getParentNodeScript().getNode();
         Node otherNode = getOtherEndpoint().getParentNodeScript().getNode();
-        //Debug.Log(ownNode);
-        //Debug.Log(otherNode);
 
-        //Debug.Log(parentNode);
 
 
         if (!Node.doesEdgeExist(ownNode, otherNode))
         {
             gameObject.transform.parent.name = "Edge:" + ownNode.id.ToString() + "-" + otherNode.id.ToString();
-
+            Edge linkedEdge;
             bool bidirect = role == Role.bidirect ? true : false;
             if (role != Role.destination)
             {
+                Debug.Log("Setting linked edge");
                 linkedEdge = Edge.createEdge(_srcNode: ownNode, _destNode: otherNode, _bidirect: bidirect);
             }
             else
             {
+                Debug.Log("Setting linked edge");
                 linkedEdge = Edge.createEdge(_srcNode: otherNode, _destNode: ownNode, _bidirect: bidirect);
             }
+            getConnectLine().updateEdge(linkedEdge);
+            //gameObject.transform.parent.GetComponent<ConnectLine>().edgeInput.text = linkedEdge.cost.ToString();
         }
         else
         {
@@ -280,6 +285,7 @@ public class Endpoint : MonoBehaviour
         {
             Debug.Log("Deleting edge");
             Edge.deleteEdge(ownNode, otherNode);
+            getConnectLine().updateEdge(null);
         }
     }
 

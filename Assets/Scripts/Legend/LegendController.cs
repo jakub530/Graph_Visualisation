@@ -12,20 +12,12 @@ public class LegendController : MonoBehaviour
     float lowHeight = 40;
     float highHeight = 110;
 
-    float initPosX = -920;
+    float initPosX = 20;
 
 
     void Start()
     {
-        //createLegend("First Legend", Color.red);
-        //createLegend("Second Legend", Color.blue);
-        //createLegend("3 Legend", Color.cyan);
-        //createLegend("4 Legend", Color.magenta);
-        //createLegend("5 Legend", Color.gray);
-        //createLegend("6 Legend", Color.green);
-        //createLegend("7 Legend", Color.black);
-        //createLegend("8 Legend", Color.white);
-        //clearLegends();
+
     }
 
 
@@ -58,5 +50,12 @@ public class LegendController : MonoBehaviour
     float getPosX()
     {
         return initPosX + descriptionLength * ((legendList.Count -  1) / 2);
+    }
+
+    public static LegendController getLegend()
+    {
+        GameObject legendObject = GameObject.FindGameObjectWithTag("Legend");
+        LegendController legend = legendObject.GetComponent<LegendController>();
+        return legend;
     }
 }

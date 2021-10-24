@@ -25,9 +25,22 @@ public class QueueGeneration : MonoBehaviour
         
     }
 
-
-    public void renderQueue(List<QueueItemContent> itemList)
+    private List<QueueItemContent> convertNodeToQueueItems(List<AlgorithmNode> nodes)
     {
+        List<QueueItemContent> itemList = new List<QueueItemContent>();
+        foreach(AlgorithmNode node in nodes)
+        {
+            QueueItemContent item = new QueueItemContent();
+            (string name, List<string> labels, List<string> values) = node.getProps();
+            item.populateProps(name, labels, values);
+            itemList.Add(item);
+        }
+        return itemList;
+    }
+
+    public void renderQueue(List<AlgorithmNode> nodes)
+    {
+        List<QueueItemContent> itemList = convertNodeToQueueItems(nodes);
         cleanUp();
         int initHeight = -100;
         int tmpPos = initHeight;
@@ -84,19 +97,19 @@ public class QueueItemContent
     public Dictionary<string, string> properities = new Dictionary<string, string>();
     public string nodeName;
 
-    public QueueItemContent(string node)
+    public QueueItemContent()
     {
-        nodeName = node;
 
     }
 
-    public void populateProps(List<string> keys, List<string> values)
+    public void populateProps(string name, List<string> labels, List<string> values)
     {
+        nodeName = name;
         properities = new Dictionary<string, string>();
 
-        for (int i=0;i<keys.Count;i++)
+        for (int i=0;i< labels.Count;i++)
         {
-            properities.Add(keys[i], values[i]);
+            properities.Add(labels[i], values[i]);
         }
     }
 

@@ -15,7 +15,6 @@ public class AlgorithmControl : MonoBehaviour
         if (nodeClickEvent == null)
         {
             nodeClickEvent = new NodeClickEvent();
-            nodeClickEvent.AddListener(Ping);
         }
     }
 
@@ -25,11 +24,6 @@ public class AlgorithmControl : MonoBehaviour
         
     }
 
-    void Ping(GameObject node)
-    {
-        Debug.Log("Alorithm Control Ping");
-        Debug.Log(node);
-    }
 
     public void setActiveAlgorithm(Algorithm algorithm)
     {
