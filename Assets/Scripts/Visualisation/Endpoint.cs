@@ -31,9 +31,22 @@ public class Endpoint : MonoBehaviour
     bool disconnected = false;
     [SerializeField] public Role role;
 
+    // Mode
+    private ModeSwitchEvent modeSwitchEvent;
+    private Mode mode;
+
+
     void Start()
     {
         setEndpointSprite();
+        modeSwitchEvent = UIControl.get().modeSwitchEvent;
+        modeSwitchEvent.AddListener(Switch);
+        Switch(Mode.editMode);
+    }
+
+    void Switch(Mode newMode)
+    {
+        mode = newMode;
     }
 
     public void setParentNode(GameObject node)
@@ -76,6 +89,7 @@ public class Endpoint : MonoBehaviour
 
     public void initEndpoint(GameObject node, GameObject otherEndpoint, Role _role, bool setClickedFlag)
     {
+        Switch(Mode.editMode);
         setParentNode(node);
         processRole(_role);
         setOtherEndpoint(otherEndpoint);
@@ -201,35 +215,43 @@ public class Endpoint : MonoBehaviour
 
     public void SetClicked()
     {
-        // When changing the node remove edge after click
-        if(parentNode != null)
+        Debug.Log(mode);
+        if(mode == Mode.editMode)
         {
-            removeEdge();
-        }
-        disconnected = false;
+            // When changing the node remove edge after click
+            if (parentNode != null)
+            {
+                removeEdge();
+            }
+            disconnected = false;
 
-        // Mouse tracking script
-        mouseDown = true;
-        mZCord = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
-        mOffset = gameObject.transform.position - GetMouseWorldPos();
+            // Mouse tracking script
+            mouseDown = true;
+            mZCord = Camera.main.WorldToScreenPoint(gameObject.transform.position).z;
+            mOffset = gameObject.transform.position - GetMouseWorldPos();
+        }
     }
 
     public void SetUnclicked()
     {
-        setCursorDefault();
-        mouseDown = false;
-        Debug.Log(snapNode);
-        if (snapNode == null)
+        if(mode == Mode.editMode)
         {
-            setParentNode(null);
-            disconnected = true;
+            setCursorDefault();
+            mouseDown = false;
+            Debug.Log(snapNode);
+            if (snapNode == null)
+            {
+                setParentNode(null);
+                disconnected = true;
+            }
+            else
+            {
+                setParentNode(snapNode);
+                snapNode = null;
+                createEdge();
+            }
         }
-        else
-        {
-            setParentNode(snapNode);
-            snapNode = null;
-            createEdge();
-        }     
+ 
     }
 
     private Vector3 GetMouseWorldPos()

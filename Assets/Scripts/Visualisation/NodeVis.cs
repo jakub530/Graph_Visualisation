@@ -14,13 +14,34 @@ public class NodeVis : MonoBehaviour
     [SerializeField] int edgeCount;
     [SerializeField] GameObject connectionCreator;
     private NodeClickEvent nodeClickEvent;
+    private ModeSwitchEvent modeSwitchEvent;
+    private Mode mode;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        connectClickEvent();
+        modeSwitchEvent = UIControl.get().modeSwitchEvent;
+        modeSwitchEvent.AddListener(Switch);
+        Switch(UIControl.get().initMode);
     }
+
+    private void Switch(Mode newMode)
+    {
+        Debug.Log("Node Vis Switch Mode to " + newMode);
+        mode = newMode;
+        if(newMode == Mode.runMode)
+        {
+            connectClickEvent();
+            connectionCreator.SetActive(false);
+        }
+        else
+        {
+            connectionCreator.SetActive(true);
+        }
+    }
+
+
 
     void connectClickEvent()
     {
@@ -68,7 +89,12 @@ public class NodeVis : MonoBehaviour
 
     public void OnMouseDown()
     {
-        nodeClickEvent.Invoke(gameObject);
+        Debug.Log(mode);
+        if (mode == Mode.runMode)
+        {
+            nodeClickEvent.Invoke(gameObject);
+        }
+
     }
 
 
