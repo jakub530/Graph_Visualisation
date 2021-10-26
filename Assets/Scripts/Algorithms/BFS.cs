@@ -6,120 +6,84 @@ using System.Linq;
 public class BFS : Algorithm
 {
     // Necessary variables for algorithm
-    List<BFSNode> allNodes;
+    Dictionary<int,BFSNode> allNodes;
     List<BFSNode> Q;
-    BFSNode startNode;
     Phase phase;
-
 
     public override void algorithmPreInitialization()
     {
         // Need to select start and end node
-        nodesToSelect = 1;
-        configureGroupVis();
-        phase = Phase.search;
-        allNodes = AlgorithmUtility.getAllNodes().Select(_ => new BFSNode(_)).ToList();
-    }
-
-    private void configureGroupVis()
-    {
-        visualGroups = new Dictionary<string, GroupVis>()
+        startNodeGroups = new List<(string visGroupName, string nodeName)>
         {
-            { "Queued Nodes",   new GroupVis(Color.blue, new List<Node>() , "Queued Nodes") },
-            { "Visited Nodes", new GroupVis(Color.cyan, new List<Node>(), "Visited Nodes") },
-            { "Active Node",   new GroupVis(Color.red, new List<Node>() , "Active Node") },
+            ("active", "startNode"),
         };
-    }
 
-    public override void processNodeClick(int index, GameObject node)
-    {
-        int nodeId = node.GetComponent<NodeVis>().attachedNode.id;
-        switch (index)
-        {
-            case 0:
-                startNode = BFSNode.findNodeById(allNodes, nodeId);
-                getGroup(Groups.active).startNewList(startNode.getNode());
-                break;
-        }
-        updateColors();
-    }
-
-    private enum Groups
-    {
-        visited,
-        active,
-        queued,
-    }
-
-    private enum Phase
-    {
-        search,
-        finished
-    }
-
-    private GroupVis getGroup(Groups group)
-    {
-        switch (group)
-        {
-            case Groups.visited:
-                return visualGroups["Visited Nodes"];
-            case Groups.queued:
-                return visualGroups["Queued Nodes"];
-            case Groups.active:
-                return visualGroups["Active Node"];
-            default:
-                return null;
-        }
+        configureVisualGroups(
+            new List<(Color color, string name, string fullName)>
+            {
+                (Color.blue,   "queued", "Queued Nodes"),
+                (Color.cyan,   "visited","Visited Nodes"),
+                (Color.red,    "active", "Active Nodes"),
+                (Color.yellow, "added",  "Added Node"),
+            }
+        );
+        phase = Phase.search;
+        allNodes = AlgorithmUtility.getAllNodes().ToDictionary(_ => _.id ,_ => new BFSNode(_));
     }
 
     public override void algorithmInitialization()
     {
-        Q = new List<BFSNode>() { startNode };
-        startNode.visited = true;
+        Q = new List<BFSNode>() { findNodeByName("startNode") };
+        findNodeByName("startNode").visited = true;
         updateColors();
     }
-
 
     public override State runStep()
     {
         Debug.Log("running Step");
 
-        (BFSNode node, bool reachedGoal) = searchAlgorithm();
+        (BFSNode node, bool reachedGoal, bool switchActive) = searchAlgorithm();
         if(!reachedGoal)
         {
-            getGroup(Groups.visited).addNode(getGroup(Groups.active).getFirstNode());
-            getGroup(Groups.active).startNewList(node.getNode());
+            if(switchActive)
+            {
+                visGroups["visited"].addNode(visGroups["active"].getFirstNode());
+
+                visGroups["added"].startNewList(null);
+                if(node != null)
+                {
+                    visGroups["active"].startNewList(node.getNode());
+                }
+            }
         }
-            else
+        else
         {
             phase = Phase.finished;
         }
-
 
         updateColors();
         updateQueue(ConvertList(Q));
         return phase == Phase.finished ? State.inactive : State.active;
     }
 
-    public (BFSNode, bool) searchAlgorithm()
+    public (BFSNode, bool, bool) searchAlgorithm()
     {
         BFSNode u;
         bool endFlag = false;
+        bool switchActive = false;
 
         if (Q.Count > 0)
         {
             u = Q.First();
-            Q.Remove(u);
-
-            foreach (var x in u.node.findDestinationNodes())
+            BFSNode v = u.node.findDestinationNodes().Select(_ => allNodes[_.id]).Where(_=>_.visited == false).FirstOrDefault();
+            if(v != null)
             {
-                BFSNode v = allNodes.Where(_ => _.node.id == x.id).First();
-                if (v.visited == false)
-                {
-                    Q.Add(v);
-                    getGroup(Groups.queued).addNode(v.getNode());
-                    v.visited = true;
-                }
+                subStep(v);
+            }
+            else
+            {
+                Q.Remove(u);
+                switchActive = true;
             }
         }
         else
@@ -127,17 +91,31 @@ public class BFS : Algorithm
             u = null;
             endFlag = true;
         }
-        return (u, endFlag);
+        return (Q.FirstOrDefault(), endFlag, switchActive);
     }
 
-    public void subStep()
+    public void subStep(BFSNode v)
     {
-
+        Q.Add(v);
+        visGroups["queued"].addNode(v.getNode());
+        visGroups["added"].startNewList(v.getNode());
+        v.visited = true;
     }
 
     private List<AlgorithmNode> ConvertList(List<BFSNode> nodes)
     {
         return nodes.Select(_ => (AlgorithmNode)_).ToList();
+    }
+
+    private BFSNode findNodeByName(string name)
+    {
+        return allNodes[namedNodes[name]];
+    }
+
+    private enum Phase
+    {
+        search,
+        finished
     }
 }
 

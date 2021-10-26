@@ -6,14 +6,15 @@ public class Algorithm : MonoBehaviour
 {
     int intenalClock = 0;
     int selectedNodes = 0;
-    public int nodesToSelect = 0;
     State state = State.inactive;
 
     StateTransition clock;
     AlgorithmControl algorithmControl;
     NodeClickEvent nodeClickEvent;
 
-    public Dictionary<string, GroupVis> visualGroups;
+    public Dictionary<string, GroupVis> visGroups;
+    public Dictionary<string, int> namedNodes;
+    public List<(string visGroupName, string nodeName)> startNodeGroups;
 
     public void Start()
     {
@@ -34,12 +35,12 @@ public class Algorithm : MonoBehaviour
     {
         if(state == State.pending)
         {
-            if(selectedNodes < nodesToSelect)
+            if(selectedNodes < startNodeGroups.Count)
             {
                 processNodeClick(selectedNodes, node);
                 selectedNodes++;
 
-                if(selectedNodes == nodesToSelect)
+                if(selectedNodes == startNodeGroups.Count)
                 {
                     algorithmInitialization();
                     state = State.active;
@@ -48,14 +49,31 @@ public class Algorithm : MonoBehaviour
         }
     }
 
-    public virtual void processNodeClick(int index, GameObject node)
+    public void configureVisualGroups(List<(Color color, string name, string fullName)> configuration)
+    {
+        visGroups = new Dictionary<string, GroupVis>();
+        foreach (var config in configuration)
+        {
+            visGroups.Add(config.name, new GroupVis(config.color, new List<Node>(), config.fullName));
+        }
+    }
+
+    public void processNodeClick(int index, GameObject gameObjectNode)
+    {
+        Node node = gameObjectNode.GetComponent<NodeVis>().attachedNode;
+        var configRow = startNodeGroups[index];
+        namedNodes.Add(configRow.nodeName, node.id);
+        visGroups[configRow.visGroupName].addNode(node);
+        updateColors();
+    }
+
+    public virtual void addToGroup(int nodeID, int index)
     {
 
     }
 
     public void runAlgorithm()
     {
-        Debug.Log("Running Algorithm");
         if (clock.state != intenalClock)
         {
             intenalClock = clock.state;
@@ -88,12 +106,13 @@ public class Algorithm : MonoBehaviour
     public void algorithmClick()
     {
         LegendController.getLegend().clearLegends();
+        namedNodes = new Dictionary<string, int>();
         clearColor();
         selectedNodes = 0;
         algorithmPreInitialization();
         algorithmControl.setActiveAlgorithm(this);
 
-        if(nodesToSelect == 0)
+        if(startNodeGroups.Count == 0)
         {
             algorithmInitialization();
             state = State.active;
@@ -113,7 +132,7 @@ public class Algorithm : MonoBehaviour
 
     public void updateColors()
     {
-        foreach(GroupVis group in  visualGroups.Values)
+        foreach(GroupVis group in visGroups.Values)
         {
             group.updateColors();
         }
