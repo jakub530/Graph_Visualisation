@@ -16,6 +16,10 @@ public class Algorithm : MonoBehaviour
     public Dictionary<string, int> namedNodes;
     public List<(string visGroupName, string nodeName)> startNodeGroups;
 
+    // Mode
+    private ModeSwitchEvent modeSwitchEvent;
+    private Mode mode;
+
     public void Start()
     {
         clock = GameObject.FindGameObjectWithTag("Clock").GetComponent<StateTransition>();
@@ -23,6 +27,21 @@ public class Algorithm : MonoBehaviour
         
         nodeClickEvent = algorithmControl.nodeClickEvent;
         nodeClickEvent.AddListener(processClick);
+
+        modeSwitchEvent = UIControl.get().modeSwitchEvent;
+        modeSwitchEvent.AddListener(Switch);
+        Switch(Mode.editMode);
+    }
+
+    void Switch(Mode newMode)
+    {
+        mode = newMode;
+        cleanStart();
+    }
+
+    void cleanStart()
+    {
+        state = State.inactive;
     }
 
     public void Update()
@@ -107,7 +126,7 @@ public class Algorithm : MonoBehaviour
     {
         LegendController.getLegend().clearLegends();
         namedNodes = new Dictionary<string, int>();
-        clearColor();
+        Algorithm.clearColor();
         selectedNodes = 0;
         algorithmPreInitialization();
         algorithmControl.setActiveAlgorithm(this);
@@ -138,7 +157,7 @@ public class Algorithm : MonoBehaviour
         }
     }
 
-    public void clearColor()
+    public static void clearColor()
     {
         AlgorithmUtility.changeAllNodeColor(Color.grey);
     }

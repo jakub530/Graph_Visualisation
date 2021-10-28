@@ -12,7 +12,7 @@ public class LegendController : MonoBehaviour
     float lowHeight = 40;
     float highHeight = 110;
 
-    float initPosX = 20;
+    float initPosX = 40;
 
 
     void Start()
@@ -44,7 +44,7 @@ public class LegendController : MonoBehaviour
 
     float getPosY()
     {
-        return legendList.Count % 2 == 0 ? 40 : 110; 
+        return legendList.Count % 2 == 0 ? lowHeight : highHeight; 
     }
 
     float getPosX()

@@ -48,9 +48,11 @@ public class UIControl : MonoBehaviour
         {
             runModeObject.SetActive(true);
             editModeObject.SetActive(false);
+            AlgorithmUtility.changeAllNodeColor(Color.gray);
         }
         else
         {
+            AlgorithmUtility.changeAllNodeColor(Color.gray);
             runModeObject.SetActive(false);
             editModeObject.SetActive(true);
         }

@@ -17,6 +17,7 @@ TagManager:
   - runMode
   - editMode
   - uiControl
+  - queueMask
   layers:
   - Default
   - TransparentFX

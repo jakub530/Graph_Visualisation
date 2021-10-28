@@ -11,12 +11,23 @@ public class QueueGeneration : MonoBehaviour
     [SerializeField] GameObject itemPrefab;
     [SerializeField] GameObject propPrefab;
     List<GameObject> queueItems = new List<GameObject>();
+    int maxQueueItems;
 
     // Start is called before the first frame update
     void Start()
     {
+        adjustQueueForScreenSize();
 
+    }
 
+    void adjustQueueForScreenSize()
+    {
+        int height = Screen.height;
+        Debug.Log(height);
+        GameObject queueMask = GameObject.FindGameObjectWithTag("queueMask");
+        queueMask.GetComponent<RectTransform>().sizeDelta = new Vector2(300, Screen.height - 200);
+        int offset = 400;
+        maxQueueItems = (Screen.height - offset) / 150;
     }
 
     // Update is called once per frame
@@ -40,13 +51,14 @@ public class QueueGeneration : MonoBehaviour
 
     public void renderQueue(List<AlgorithmNode> nodes)
     {
+        adjustQueueForScreenSize();
         List<QueueItemContent> itemList = convertNodeToQueueItems(nodes);
         cleanUp();
         int initHeight = -100;
         int tmpPos = initHeight;
         int heightDelta = 155;
 
-        int numItems = Mathf.Min(5, itemList.Count);
+        int numItems = Mathf.Min(maxQueueItems, itemList.Count);
          
         for(int i=0; i < numItems; i++)
         {

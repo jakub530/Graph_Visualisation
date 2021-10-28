@@ -11,12 +11,14 @@ public class HideQueue : MonoBehaviour
     [SerializeField] int axis = 0;
     [SerializeField] int direction;
     float moved = 0;
+
     bool transition = false;
 
     // Start is called before the first frame update
     void Start()
     {
         transform.eulerAngles = new Vector3(0f, 0f, startingAngle);
+
     }
 
     // Update is called once per frame
