@@ -59,6 +59,10 @@ public class Djikstra : Algorithm
         if(phase == Phase.search)
         {
             (DjikstraNode node, bool reachedGoal) = searchAlgorithm();
+            if(node == null)
+            {
+                return State.inactive;
+            }
             visGroups["visited"].addNode(visGroups["active"].getFirstNode());
             visGroups["active"].startNewList(node.getNode());
             if(reachedGoal)

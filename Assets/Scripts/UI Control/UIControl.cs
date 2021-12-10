@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-
+using UnityEngine.UI;
 
 public class UIControl : MonoBehaviour
 {
@@ -46,6 +46,8 @@ public class UIControl : MonoBehaviour
         mode = newMode;
         if (mode == Mode.runMode)
         {
+            flagStateDictionary[Flag.addNodeFlag] = false;
+            changeButtonState("Add Node", false);
             runModeObject.SetActive(true);
             editModeObject.SetActive(false);
             AlgorithmUtility.changeAllNodeColor(Color.gray);
@@ -55,6 +57,7 @@ public class UIControl : MonoBehaviour
             AlgorithmUtility.changeAllNodeColor(Color.gray);
             runModeObject.SetActive(false);
             editModeObject.SetActive(true);
+
         }
         modeSwitchEvent.Invoke(newMode);
     }
@@ -80,7 +83,18 @@ public class UIControl : MonoBehaviour
     {
         //Debug.Log(flagName);
         Flag flag = dictionaryNameTranslation[flagName];
+
         flagStateDictionary[flag] = !flagStateDictionary[flag];
+        if (flagName == "Add Node")
+        {
+            changeButtonState(flagName, flagStateDictionary[flag]);
+        }
+    }
+
+    public void changeButtonState(string buttonName, bool newState)
+    {
+        GameObject button = GameObject.Find(buttonName);
+        button.GetComponent<Image>().color = newState ? Color.red : Color.white;
     }
 
     private void setUpFlagTranslations()
