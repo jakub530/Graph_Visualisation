@@ -59,7 +59,19 @@ By default every edge that is created is a bidirectional edge. In order to chang
 [![Image from Gyazo](https://i.gyazo.com/a45b3c02d11ebc697775c3b424e727b4.gif)](https://gyazo.com/a45b3c02d11ebc697775c3b424e727b4)
 
 ## Using Algorithms
+### General Notes (Draft)
+In order to use algorithm click on the button following by some number of nodes.
+After correct number of nodes is clicked the algorithm will start
+In order to reset algorithm switch modes back and forth
+Queue on the right side will display the order of next 5 active nodes along with some properties depending on algorithm
+The legend on the bottom displays meaning of each node colour 
+
+
 ### Djikstra
+Implementation of [Djikstra](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm) algorithm used to find a shortest path between two nodes. 
+
+In order to visualise it, first click on the "Djikstra" button. Following that click on two nodes of your choice. Those will be "Start" and "End" node respectively. At this point visualisation will start, ending whenever shortest path is found, or alternatively when no path between two nodes can be found.
+
 [![Image from Gyazo](https://i.gyazo.com/8ade518e284889119381460e410be4a8.gif)](https://gyazo.com/8ade518e284889119381460e410be4a8)
 
 ### BFS
