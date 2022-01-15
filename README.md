@@ -1,32 +1,73 @@
-# Graph_Visualisation
+# Graph Algorithm Visualisation Project
 
-## Add Nodes
-[![Image from Gyazo](https://i.gyazo.com/14b50b68e0500b7a76a6e8a1ac923703.gif)](https://gyazo.com/14b50b68e0500b7a76a6e8a1ac923703)
+This repository holds code for Graph Algorithm Visualisation project made using Unity Engine and written in C#. 
 
-## Create Edges
-[![Image from Gyazo](https://i.gyazo.com/4fffbec8ac47fcad9f8cf16b61671672.gif)](https://gyazo.com/4fffbec8ac47fcad9f8cf16b61671672)
+The main premise of the project is to easily create, test and visualise functioning of Graph Theory Algorithms. 
 
-## Delete Edges
-[![Image from Gyazo](https://i.gyazo.com/026ff8221f304d9aaed6da042b06e40d.gif)](https://gyazo.com/026ff8221f304d9aaed6da042b06e40d)
+Graph creator supports both single and two directional edges. In addition user can create both weighted and unweigthed graphs.
 
-## Cost Change
-[![Image from Gyazo](https://i.gyazo.com/6fb335ba66ff576ce5b7fd47c503d059.gif)](https://gyazo.com/6fb335ba66ff576ce5b7fd47c503d059)
+Current version implements 3 different algorithms:
+1. **Djikstra** algorithm for finding shortest path between two nodes.
+2. **BFS (Breadth-first search)** algorithm for graph treversal.
+3. **Cycle detection** algorithm, which as name implies searches for a cycle in algorithm.
 
-## Edge Types
-[![Image from Gyazo](https://i.gyazo.com/a45b3c02d11ebc697775c3b424e727b4.gif)](https://gyazo.com/a45b3c02d11ebc697775c3b424e727b4)
+The project is currently hosted on [Unity Play](https://play.unity.com/mg/other/my-new-microgame-5350).
 
-## UI Control
+# User Instructions
+## General Navigation
+### UI Control
+
+The application has two different modes - graph creation mode and algorithm visualisation mode. In order to switch between two modes, click on the "Switch mode" button in top left corner.
+
+In the algorithm visualisation mode there are two ribbons visible by default - Queue and Legend. In order to show/hide the ribbon click on the white arrow next to the ribbon.
+
 [![Image from Gyazo](https://i.gyazo.com/b57eb03c97a634c972c2e5bdbb2121da.gif)](https://gyazo.com/b57eb03c97a634c972c2e5bdbb2121da)
 
-## Camera Control
+### Camera Control
+Camera control for the application is done using mouse. In order to zoom in/out use mouse scroll. In order to move the graph click on middle mouse button away from the center of the screen. Camera will follow that direction. 
 
 [![Image from Gyazo](https://i.gyazo.com/5a424df08f89faed7020ba7c607bb48c.gif)](https://gyazo.com/5a424df08f89faed7020ba7c607bb48c)
 
-## Djikstra
+## Graph Editing
+### Adding Nodes
+In order to create new nodes, click on the "Add Node" toggle on the left side. Afterwards simply click to create new nodes. After you finish adding desired number of nodes, click on "Add Node" toggle again to disable node addition. 
+
+[![Image from Gyazo](https://i.gyazo.com/14b50b68e0500b7a76a6e8a1ac923703.gif)](https://gyazo.com/14b50b68e0500b7a76a6e8a1ac923703)
+
+### Creating Edges
+Edge creation is started by clicking and holding the plus symbol next to the desired node. Afterwards by dragging the mouse onto another node new edge can be created. 
+
+There can exist only single edge between any two nodes. By default weight of all edges is equal to 1, therefore graph is treated as unweighted graph.
+
+[![Image from Gyazo](https://i.gyazo.com/4fffbec8ac47fcad9f8cf16b61671672.gif)](https://gyazo.com/4fffbec8ac47fcad9f8cf16b61671672)
+
+### Deleting Edges
+Edge can be deleted by clicking on either end of the edge and moving it away from any nodes. After the mouse button is released edge will be deleted.
+
+[![Image from Gyazo](https://i.gyazo.com/026ff8221f304d9aaed6da042b06e40d.gif)](https://gyazo.com/026ff8221f304d9aaed6da042b06e40d)
+
+### Changing Cost
+Cost of edge can be modified by clicking on existing cost and typing new cost. 
+
+Note that while it is possible to enter negative cost, one of the implemented Algorithms (Djikstra Algorithm) will fail to function correctly for graph with negative cycles.
+
+[![Image from Gyazo](https://i.gyazo.com/6fb335ba66ff576ce5b7fd47c503d059.gif)](https://gyazo.com/6fb335ba66ff576ce5b7fd47c503d059)
+
+### Changing Edge Types
+By default every edge that is created is a bidirectional edge. In order to change it click on one of the Source/Destinatin/Bidirectional buttons on the left side of the screen.
+
+[![Image from Gyazo](https://i.gyazo.com/a45b3c02d11ebc697775c3b424e727b4.gif)](https://gyazo.com/a45b3c02d11ebc697775c3b424e727b4)
+
+## Using Algorithms
+### Djikstra
 [![Image from Gyazo](https://i.gyazo.com/8ade518e284889119381460e410be4a8.gif)](https://gyazo.com/8ade518e284889119381460e410be4a8)
 
-## BFS
+### BFS
 [![Image from Gyazo](https://i.gyazo.com/f8f2ddcab62ba7feb9d6686edc8179c9.gif)](https://gyazo.com/f8f2ddcab62ba7feb9d6686edc8179c9)
 
-## Cycle Detection
+### Cycle Detection
 [![Image from Gyazo](https://i.gyazo.com/91b71857d0215d5ed8bcd0b5319f24d3.gif)](https://gyazo.com/91b71857d0215d5ed8bcd0b5319f24d3)
+
+# Technical Documentation
+
+## Adding new algorithms
