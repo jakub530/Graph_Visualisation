@@ -90,3 +90,16 @@ It doesn't take any nodes as input. It is based on BFS, and works by attempting 
 # Technical Documentation
 
 ## Adding new algorithms
+
+All algorithms inherit from Algorithm class. There are three main functions, which need to be implemented in a new algorithm (presented on the example of simples Algorithm - BFS):
+
+1. [algorithmPreInitialization](https://github.com/jakub530/Graph_Visualisation/blob/main/Assets/Scripts/Algorithms/BFS.cs#L13-L32):
+Algorithm Pre-Initialization is main configuration steps. The main things to configure are how many input nodes will the algorithm take and color coding used throughout the algorithm.
+
+2. [algorithmInitialization](https://github.com/jakub530/Graph_Visualisation/blob/main/Assets/Scripts/Algorithms/BFS.cs#L34-L39):
+Algorithm Initialization takes input nodes and modifies them, adjusting their cost, presence in the queue etc.
+
+3. [runStep](https://github.com/jakub530/Graph_Visualisation/blob/main/Assets/Scripts/Algorithms/BFS.cs#L41-L67):
+RunStep as name indicates executes single step of the algorithm. When the condition is met it sends stop flag to function coordinating step execution. 
+
+
