@@ -59,25 +59,32 @@ By default every edge that is created is a bidirectional edge. In order to chang
 [![Image from Gyazo](https://i.gyazo.com/a45b3c02d11ebc697775c3b424e727b4.gif)](https://gyazo.com/a45b3c02d11ebc697775c3b424e727b4)
 
 ## Using Algorithms
-### General Notes (Draft)
-In order to use algorithm click on the button following by some number of nodes.
-After correct number of nodes is clicked the algorithm will start
-In order to reset algorithm switch modes back and forth
-Queue on the right side will display the order of next 5 active nodes along with some properties depending on algorithm
-The legend on the bottom displays meaning of each node colour 
+### General Notes 
+In order to visualize any algorithm user needs to click on the button corresponding to given algorithm and afterwards select a number of nodes. The number of nodes to select depends on the chosen algorithm. The visualisation will start after last node is selected.
 
+Queue on the right side displays the order of next 5 active nodes along with properties, which are relevant for given algorithm (such as distance in case of shortest path algorithm).
+
+The legend on the bottom explains the meaning behind each node color for a particular algorithm.
 
 ### Djikstra
 Implementation of [Djikstra](https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm) algorithm used to find a shortest path between two nodes. 
 
-In order to visualise it, first click on the "Djikstra" button. Following that click on two nodes of your choice. Those will be "Start" and "End" node respectively. At this point visualisation will start, ending whenever shortest path is found, or alternatively when no path between two nodes can be found.
+The algorithm requires selection of two nodes. Those will be "Start" and "End" node respectively. The visualisation ends whenever shortest path is found, or alternatively when no path between two nodes can be found. If the path is found the nodes, which are part of the path will get highlighted.
 
 [![Image from Gyazo](https://i.gyazo.com/8ade518e284889119381460e410be4a8.gif)](https://gyazo.com/8ade518e284889119381460e410be4a8)
 
-### BFS
+### BFS (Breadth-first search)
+Implementation of [BFS](https://en.wikipedia.org/wiki/Breadth-first_search) graph traversal algorithm.
+
+The algorithm requires selection of a single node. Starting at that node visualisation will continue until all nodes connected to the original node have been iterated over.
+
 [![Image from Gyazo](https://i.gyazo.com/f8f2ddcab62ba7feb9d6686edc8179c9.gif)](https://gyazo.com/f8f2ddcab62ba7feb9d6686edc8179c9)
 
 ### Cycle Detection
+Algorithm used to detect cycles in graph.
+
+It doesn't take any nodes as input. It is based on BFS, and works by attempting to iterate over all nodes. If particular node has been reached twice from two different sources it must mean that cycle has been found. At that point the cycle will be highlighted on the screee. 
+
 [![Image from Gyazo](https://i.gyazo.com/91b71857d0215d5ed8bcd0b5319f24d3.gif)](https://gyazo.com/91b71857d0215d5ed8bcd0b5319f24d3)
 
 # Technical Documentation
